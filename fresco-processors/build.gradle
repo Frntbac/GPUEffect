@@ -1,0 +1,24 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion COMPILE_SDK.toInteger()
+    buildToolsVersion BUILD_TOOL
+
+
+    defaultConfig {
+        minSdkVersion MIN_VERSION.toInteger()
+        targetSdkVersion TARGET_VERSION.toInteger()
+        versionCode VERSION_CODE.toInteger()
+        versionName VERSION_NAME
+    }
+}
+
+dependencies {
+    compileOnly "com.facebook.fresco:fresco:1.4.0"
+
+    implementation "com.android.support:support-annotations:$SUPPORT_LIB_VERSION"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$KOTLIN_VERSION"
+
+    implementation project(':lib')
+}

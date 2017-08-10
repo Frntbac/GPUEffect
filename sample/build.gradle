@@ -1,0 +1,30 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion COMPILE_SDK.toInteger()
+    buildToolsVersion BUILD_TOOL
+
+    defaultConfig {
+        applicationId "com.frontback.gpueffect.sample"
+        minSdkVersion 14
+        targetSdkVersion TARGET_VERSION.toInteger()
+        versionCode VERSION_CODE.toInteger()
+        versionName VERSION_NAME
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    implementation project(':lib')
+    implementation project(':fresco-processors')
+    implementation "com.facebook.fresco:fresco:1.4.0"
+    implementation "com.android.support:appcompat-v7:$SUPPORT_LIB_VERSION"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$KOTLIN_VERSION"
+}
