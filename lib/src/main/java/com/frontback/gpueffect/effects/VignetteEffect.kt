@@ -88,21 +88,20 @@ open class VignetteEffect @JvmOverloads constructor(
         const val START = "vignetteStart"
         const val END = "vignetteEnd"
 
-        const val F_SHADER = "" +
-                "uniform sampler2D ${GLSLProgram.INPUT_TEXTURE};\n" +
-                "varying highp vec2 ${GLSLProgram.TEXTURE_COORDINATE};\n" +
-                "\n" +
-                "uniform lowp vec2 $CENTER;\n" +
-                "uniform lowp vec3 $COLOR;\n" +
-                "uniform highp float $START;\n" +
-                "uniform highp float $END;\n" +
-                "\n" +
-                "void main()\n" +
-                "{\n" +
-                "   lowp vec3 rgb = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${GLSLProgram.TEXTURE_COORDINATE}).rgb;\n" +
-                "   lowp float d = distance(textureCoordinate, $CENTER);\n" +
-                "   lowp float percent = smoothstep($START, $END, d);\n" +
-                "   gl_FragColor = vec4(mix(rgb.x, $COLOR.x, percent), mix(rgb.y, $COLOR.y, percent), mix(rgb.z, $COLOR.z, percent), 1.0);\n" +
-                " }"
+        const val F_SHADER = """
+uniform sampler2D ${GLSLProgram.INPUT_TEXTURE};
+varying highp vec2 ${GLSLProgram.TEXTURE_COORDINATE};
+
+uniform lowp vec2 $CENTER;
+uniform lowp vec3 $COLOR;
+uniform highp float $START;
+uniform highp float $END;
+
+void main() {
+    lowp vec3 rgb = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${GLSLProgram.TEXTURE_COORDINATE}).rgb;
+    lowp float d = distance(textureCoordinate, $CENTER);
+    lowp float percent = smoothstep($START, $END, d);
+    gl_FragColor = vec4(mix(rgb.x, $COLOR.x, percent), mix(rgb.y, $COLOR.y, percent), mix(rgb.z, $COLOR.z, percent), 1.0);
+}"""
     }
 }

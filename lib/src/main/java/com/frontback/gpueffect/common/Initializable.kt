@@ -35,7 +35,7 @@ abstract class Initializable(val name: String) {
             return _id
         }
         @VisibleForTesting(otherwise = VisibleForTesting.PROTECTED)
-        protected set(value) {
+        set(value) {
             _id = value
         }
 

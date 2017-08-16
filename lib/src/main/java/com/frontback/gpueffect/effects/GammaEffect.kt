@@ -54,17 +54,16 @@ open class GammaEffect @JvmOverloads constructor(
     companion object {
         const val GAMMA = "gamma"
 
-        const val F_SHADER = "" +
-                "varying vec2 ${GLSLProgram.TEXTURE_COORDINATE};\n" +
-                "" +
-                "uniform sampler2D ${GLSLProgram.INPUT_TEXTURE};\n" +
-                "uniform lowp float $GAMMA;\n" +
-                "\n" +
-                "void main()\n" +
-                "{\n" +
-                "   lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);\n" +
-                "   gl_FragColor = vec4(pow(textureColor.rgb, vec3($GAMMA)), textureColor.w);\n" +
-                "}"
+        const val F_SHADER = """
+varying vec2 ${GLSLProgram.TEXTURE_COORDINATE};
+
+uniform sampler2D ${GLSLProgram.INPUT_TEXTURE};
+uniform lowp float $GAMMA;
+
+void main() {
+   lowp vec4 textureColor = texture2D(inputImageTexture, textureCoordinate);
+   gl_FragColor = vec4(pow(textureColor.rgb, vec3($GAMMA)), textureColor.w);
+}"""
     }
 
 }

@@ -27,39 +27,38 @@ open class SketchEffect : GPUMultiEffect() {
     }
 
     companion object {
-        const val F_SHADER = "" +
-                "precision mediump float;\n" +
-                "\n" +
-                "varying vec2 ${GLSLProgram.TEXTURE_COORDINATE};\n" +
-                "varying vec2 ${TextureSampling3x3Effect.LEFT};\n" +
-                "varying vec2 ${TextureSampling3x3Effect.RIGHT};\n" +
-                "\n" +
-                "varying vec2 ${TextureSampling3x3Effect.TOP};\n" +
-                "varying vec2 ${TextureSampling3x3Effect.TOP_LEFT};\n" +
-                "varying vec2 ${TextureSampling3x3Effect.TOP_RIGHT};\n" +
-                "\n" +
-                "varying vec2 ${TextureSampling3x3Effect.BOTTOM};\n" +
-                "varying vec2 ${TextureSampling3x3Effect.BOTTOM_LEFT};\n" +
-                "varying vec2 ${TextureSampling3x3Effect.BOTTOM_RIGHT};\n" +
-                "\n" +
-                "uniform sampler2D ${GLSLProgram.INPUT_TEXTURE};\n" +
-                "\n" +
-                "void main()\n" +
-                "{\n" +
-                "   float bottomLeftIntensity = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${TextureSampling3x3Effect.BOTTOM_LEFT}).r;\n" +
-                "   float topRightIntensity = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${TextureSampling3x3Effect.TOP_RIGHT}).r;\n" +
-                "   float topLeftIntensity = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${TextureSampling3x3Effect.TOP_LEFT}).r;\n" +
-                "   float bottomRightIntensity = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${TextureSampling3x3Effect.BOTTOM_RIGHT}).r;\n" +
-                "   float leftIntensity = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${TextureSampling3x3Effect.LEFT}).r;\n" +
-                "   float rightIntensity = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${TextureSampling3x3Effect.RIGHT}).r;\n" +
-                "   float bottomIntensity = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${TextureSampling3x3Effect.BOTTOM}).r;\n" +
-                "   float topIntensity = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${TextureSampling3x3Effect.TOP}).r;\n" +
-                "   float h = -topLeftIntensity - 2.0 * topIntensity - topRightIntensity + bottomLeftIntensity + 2.0 * bottomIntensity + bottomRightIntensity;\n" +
-                "   float v = -bottomLeftIntensity - 2.0 * leftIntensity - topLeftIntensity + bottomRightIntensity + 2.0 * rightIntensity + topRightIntensity;\n" +
-                "\n" +
-                "   float mag = 1.0 - length(vec2(h, v));\n" +
-                "\n" +
-                "   gl_FragColor = vec4(vec3(mag), 1.0);\n" +
-                "}\n"
+        const val F_SHADER = """
+precision mediump float;
+
+varying vec2 ${GLSLProgram.TEXTURE_COORDINATE};
+varying vec2 ${TextureSampling3x3Effect.LEFT};
+varying vec2 ${TextureSampling3x3Effect.RIGHT};
+
+varying vec2 ${TextureSampling3x3Effect.TOP};
+varying vec2 ${TextureSampling3x3Effect.TOP_LEFT};
+varying vec2 ${TextureSampling3x3Effect.TOP_RIGHT};
+
+varying vec2 ${TextureSampling3x3Effect.BOTTOM};
+varying vec2 ${TextureSampling3x3Effect.BOTTOM_LEFT};
+varying vec2 ${TextureSampling3x3Effect.BOTTOM_RIGHT};
+
+uniform sampler2D ${GLSLProgram.INPUT_TEXTURE};
+
+void main() {
+   float bottomLeftIntensity = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${TextureSampling3x3Effect.BOTTOM_LEFT}).r;
+   float topRightIntensity = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${TextureSampling3x3Effect.TOP_RIGHT}).r;
+   float topLeftIntensity = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${TextureSampling3x3Effect.TOP_LEFT}).r;
+   float bottomRightIntensity = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${TextureSampling3x3Effect.BOTTOM_RIGHT}).r;
+   float leftIntensity = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${TextureSampling3x3Effect.LEFT}).r;
+   float rightIntensity = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${TextureSampling3x3Effect.RIGHT}).r;
+   float bottomIntensity = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${TextureSampling3x3Effect.BOTTOM}).r;
+   float topIntensity = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${TextureSampling3x3Effect.TOP}).r;
+   float h = -topLeftIntensity - 2.0 * topIntensity - topRightIntensity + bottomLeftIntensity + 2.0 * bottomIntensity + bottomRightIntensity;
+   float v = -bottomLeftIntensity - 2.0 * leftIntensity - topLeftIntensity + bottomRightIntensity + 2.0 * rightIntensity + topRightIntensity;
+
+   float mag = 1.0 - length(vec2(h, v));
+
+   gl_FragColor = vec4(vec3(mag), 1.0);
+}"""
     }
 }

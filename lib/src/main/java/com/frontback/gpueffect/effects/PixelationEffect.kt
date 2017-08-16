@@ -70,24 +70,23 @@ open class PixelationEffect @JvmOverloads constructor(
         const val IMAGE_HEIGHT_FACTOR = "imageHeightFactor"
         const val PIXEL = "pixel"
 
-        const val F_SHADER = "" +
-                "precision highp float;\n" +
+        const val F_SHADER = """
+precision highp float;
 
-                "varying vec2 ${GLSLProgram.TEXTURE_COORDINATE};\n" +
+varying vec2 ${GLSLProgram.TEXTURE_COORDINATE};
 
-                "uniform float $IMAGE_WIDTH_FACTOR;\n" +
-                "uniform float $IMAGE_HEIGHT_FACTOR;\n" +
-                "uniform sampler2D ${GLSLProgram.INPUT_TEXTURE};\n" +
-                "uniform float $PIXEL;\n" +
+uniform float $IMAGE_WIDTH_FACTOR;
+uniform float $IMAGE_HEIGHT_FACTOR;
+uniform sampler2D ${GLSLProgram.INPUT_TEXTURE};
+uniform float $PIXEL;
 
-                "void main()\n" +
-                "{\n" +
-                "   vec2 uv  = ${GLSLProgram.TEXTURE_COORDINATE}.xy;\n" +
-                "   float dx = $PIXEL * $IMAGE_WIDTH_FACTOR;\n" +
-                "   float dy = $PIXEL * $IMAGE_HEIGHT_FACTOR;\n" +
-                "   vec2 coord = vec2(dx * floor(uv.x / dx), dy * floor(uv.y / dy));\n" +
-                "   vec3 tc = texture2D(${GLSLProgram.INPUT_TEXTURE}, coord).xyz;\n" +
-                "   gl_FragColor = vec4(tc, 1.0);\n" +
-                "}"
+void main() {
+   vec2 uv  = ${GLSLProgram.TEXTURE_COORDINATE}.xy;
+   float dx = $PIXEL * $IMAGE_WIDTH_FACTOR;
+   float dy = $PIXEL * $IMAGE_HEIGHT_FACTOR;
+   vec2 coord = vec2(dx * floor(uv.x / dx), dy * floor(uv.y / dy));
+   vec3 tc = texture2D(${GLSLProgram.INPUT_TEXTURE}, coord).xyz;
+   gl_FragColor = vec4(tc, 1.0);
+}"""
     }
 }

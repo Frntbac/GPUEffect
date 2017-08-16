@@ -16,15 +16,14 @@ This library will make it easier to combine effects and execute them offscreen.
 
 Kotlin :
 ```kotlin
-EmbossEffect()
-    .setInput(lena)
+(EmbossEffect() receives lena)
     .bitmap
 ```
 
 Java :
 ```java
 new EmbossEffect()
-    .setInput(lena)
+    .receives(lena)
     .getBitmap();
 ```
 
@@ -38,7 +37,7 @@ Java :
   public void onCreate(Bundle savedInstance) {
     //...
     effect = new GPUEffect();
-        effect.setInput(BitmapFactory.decodeResource(getResources(), R.drawable.lena));
+        effect.receives(BitmapFactory.decodeResource(getResources(), R.drawable.lena));
   }
 
   @Override
@@ -63,14 +62,14 @@ Java :
 Kotlin : 
 ```kotlin
 (HazeEffect() + EmbossEffect())
-    .setInput(lena)
+    .receives(lena)
     .bitmap
 ```
 
 Java : 
 ```java
 new GPUMultiEffect(new HazeEffect(), new EmbossEffect())
-    .setInput(lena)
+    .receives(lena)
     .getBitmap()
 ```
 

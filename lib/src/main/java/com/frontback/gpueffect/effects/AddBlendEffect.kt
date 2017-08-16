@@ -26,42 +26,41 @@ open class AddBlendEffect @JvmOverloads constructor(
 
     companion object {
 
-        const val F_SHADER = "" +
-                "varying highp vec2 ${GLSLProgram.TEXTURE_COORDINATE};\n" +
-                "varying highp vec2 $TEXTURE_COORDINATE2;\n" +
-                "\n" +
-                "uniform sampler2D ${GLSLProgram.INPUT_TEXTURE};\n" +
-                "uniform sampler2D $INPUT_TEXTURE2;\n" +
-                "\n" +
-                "void main()\n" +
-                "{\n" +
-                "   lowp vec4 base = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${GLSLProgram.TEXTURE_COORDINATE});\n" +
-                "   lowp vec4 overlay = texture2D($INPUT_TEXTURE2, $TEXTURE_COORDINATE2);\n" +
-                "\n" +
-                "   mediump float r;\n" +
-                "   if (overlay.r * base.a + base.r * overlay.a >= overlay.a * base.a) {\n" +
-                "       r = overlay.a * base.a + overlay.r * (1.0 - base.a) + base.r * (1.0 - overlay.a);\n" +
-                "   } else {\n" +
-                "       r = overlay.r + base.r;\n" +
-                "   }\n" +
-                "\n" +
-                "   mediump float g;\n" +
-                "   if (overlay.g * base.a + base.g * overlay.a >= overlay.a * base.a) {\n" +
-                "       g = overlay.a * base.a + overlay.g * (1.0 - base.a) + base.g * (1.0 - overlay.a);\n" +
-                "   } else {\n" +
-                "       g = overlay.g + base.g;\n" +
-                "   }\n" +
-                "\n" +
-                "   mediump float b;\n" +
-                "   if (overlay.b * base.a + base.b * overlay.a >= overlay.a * base.a) {\n" +
-                "       b = overlay.a * base.a + overlay.b * (1.0 - base.a) + base.b * (1.0 - overlay.a);\n" +
-                "   } else {\n" +
-                "       b = overlay.b + base.b;\n" +
-                "   }\n" +
-                "\n" +
-                "   mediump float a = overlay.a + base.a - overlay.a * base.a;\n" +
-                "   \n" +
-                "   gl_FragColor = vec4(r, g, b, a);\n" +
-                " }"
+        const val F_SHADER = """
+varying highp vec2 ${GLSLProgram.TEXTURE_COORDINATE};
+varying highp vec2 $TEXTURE_COORDINATE2;
+
+uniform sampler2D ${GLSLProgram.INPUT_TEXTURE};
+uniform sampler2D $INPUT_TEXTURE2;
+
+void main() {
+   lowp vec4 base = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${GLSLProgram.TEXTURE_COORDINATE});
+   lowp vec4 overlay = texture2D($INPUT_TEXTURE2, $TEXTURE_COORDINATE2);
+
+   mediump float r;
+   if (overlay.r * base.a + base.r * overlay.a >= overlay.a * base.a) {
+       r = overlay.a * base.a + overlay.r * (1.0 - base.a) + base.r * (1.0 - overlay.a);
+   } else {
+       r = overlay.r + base.r;
+   }
+
+   mediump float g;
+   if (overlay.g * base.a + base.g * overlay.a >= overlay.a * base.a) {
+       g = overlay.a * base.a + overlay.g * (1.0 - base.a) + base.g * (1.0 - overlay.a);
+   } else {
+       g = overlay.g + base.g;
+   }
+
+   mediump float b;
+   if (overlay.b * base.a + base.b * overlay.a >= overlay.a * base.a) {
+       b = overlay.a * base.a + overlay.b * (1.0 - base.a) + base.b * (1.0 - overlay.a);
+   } else {
+       b = overlay.b + base.b;
+   }
+
+   mediump float a = overlay.a + base.a - overlay.a * base.a;
+
+   gl_FragColor = vec4(r, g, b, a);
+ }"""
     }
 }

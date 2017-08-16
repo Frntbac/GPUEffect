@@ -31,10 +31,8 @@ open class BitmapTexture(
          */
         private val bitmap: Bitmap) : Texture, Initializable("BitmapTexture") {
 
-    override var width: Int = -1
-        protected set
-    override var height: Int = -1
-        protected set
+    override val width: Int = bitmap.width
+    override val height: Int = bitmap.height
 
     /**
      * {@inheritDoc}
@@ -57,9 +55,6 @@ open class BitmapTexture(
             throw IllegalStateException("Texture couldn't be generated")
         }
 
-        this.width = width
-        this.height = height
-
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, id)
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR)
         GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_LINEAR)
@@ -81,8 +76,6 @@ open class BitmapTexture(
     override fun destroy() {
         if (isInitialized) {
             GLES20.glDeleteTextures(1, intArrayOf(id), 0)
-            width = -1
-            height = -1
             unInitialize()
         }
     }

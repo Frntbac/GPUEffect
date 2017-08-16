@@ -82,63 +82,61 @@ open class SharpenEffect @JvmOverloads constructor(
         private const val CENTER_MULTIPLIER = "centerMultiplier"
         private const val EDGE_MULTIPLIER = "edgeMultiplier"
 
-        const val V_SHADER = "" +
-                "attribute vec4 position;\n" +
-                "attribute vec4 ${GLSLProgram.INPUT_TEXTURE_COORDINATE};\n" +
-                "\n" +
-                "uniform float $IMAGE_WIDTH_FACTOR; \n" +
-                "uniform float $IMAGE_HEIGHT_FACTOR; \n" +
-                "uniform float $SHARPNESS;\n" +
-                "\n" +
-                "varying vec2 ${GLSLProgram.TEXTURE_COORDINATE};\n" +
-                "varying vec2 $LEFT;\n" +
-                "varying vec2 $RIGHT; \n" +
-                "varying vec2 $TOP;\n" +
-                "varying vec2 $BOTTOM;\n" +
-                "\n" +
-                "varying float $CENTER_MULTIPLIER;\n" +
-                "varying float $EDGE_MULTIPLIER;\n" +
-                "\n" +
-                "void main()\n" +
-                "{\n" +
-                "   gl_Position = position;\n" +
-                "\n" +
-                "   mediump vec2 widthStep = vec2($IMAGE_WIDTH_FACTOR, 0.0);\n" +
-                "   mediump vec2 heightStep = vec2(0.0, $IMAGE_HEIGHT_FACTOR);\n" +
-                "\n" +
-                "   ${GLSLProgram.TEXTURE_COORDINATE} = ${GLSLProgram.INPUT_TEXTURE_COORDINATE}.xy;\n" +
-                "   $LEFT = ${GLSLProgram.INPUT_TEXTURE_COORDINATE}.xy - widthStep;\n" +
-                "   $RIGHT = ${GLSLProgram.INPUT_TEXTURE_COORDINATE}.xy + widthStep;\n" +
-                "   $TOP = ${GLSLProgram.INPUT_TEXTURE_COORDINATE}.xy + heightStep;     \n" +
-                "   $BOTTOM = ${GLSLProgram.INPUT_TEXTURE_COORDINATE}.xy - heightStep;\n" +
-                "\n" +
-                "   $CENTER_MULTIPLIER = 1.0 + 4.0 * $SHARPNESS;\n" +
-                "   $EDGE_MULTIPLIER = $SHARPNESS;\n" +
-                "}"
+        const val V_SHADER = """
+attribute vec4 position;
+attribute vec4 ${GLSLProgram.INPUT_TEXTURE_COORDINATE};
 
-        const val F_SHADER = "" +
-                "precision highp float;\n" +
-                "\n" +
-                "varying highp vec2 ${GLSLProgram.TEXTURE_COORDINATE};\n" +
-                "varying highp vec2 $LEFT;\n" +
-                "varying highp vec2 $RIGHT; \n" +
-                "varying highp vec2 $TOP;\n" +
-                "varying highp vec2 $BOTTOM;\n" +
-                "\n" +
-                "varying highp float $CENTER_MULTIPLIER;\n" +
-                "varying highp float $EDGE_MULTIPLIER;\n" +
-                "\n" +
-                "uniform sampler2D ${GLSLProgram.INPUT_TEXTURE};\n" +
-                "\n" +
-                "void main()\n" +
-                "{\n" +
-                "   mediump vec3 textureColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${GLSLProgram.TEXTURE_COORDINATE}).rgb;\n" +
-                "   mediump vec3 leftTextureColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, $LEFT).rgb;\n" +
-                "   mediump vec3 rightTextureColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, $RIGHT).rgb;\n" +
-                "   mediump vec3 topTextureColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, $TOP).rgb;\n" +
-                "   mediump vec3 bottomTextureColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, $BOTTOM).rgb;\n" +
-                "\n" +
-                "   gl_FragColor = vec4((textureColor * $CENTER_MULTIPLIER - (leftTextureColor * $EDGE_MULTIPLIER + rightTextureColor * $EDGE_MULTIPLIER + topTextureColor * $EDGE_MULTIPLIER + bottomTextureColor * $EDGE_MULTIPLIER)), texture2D(${GLSLProgram.INPUT_TEXTURE}, bottomTextureCoordinate).w);\n" +
-                "}"
+uniform float $IMAGE_WIDTH_FACTOR;
+uniform float $IMAGE_HEIGHT_FACTOR;
+uniform float $SHARPNESS;
+
+varying vec2 ${GLSLProgram.TEXTURE_COORDINATE};
+varying vec2 $LEFT;
+varying vec2 $RIGHT;
+varying vec2 $TOP;
+varying vec2 $BOTTOM;
+
+varying float $CENTER_MULTIPLIER;
+varying float $EDGE_MULTIPLIER;
+
+void main() {
+   gl_Position = position;
+
+   mediump vec2 widthStep = vec2($IMAGE_WIDTH_FACTOR, 0.0);
+   mediump vec2 heightStep = vec2(0.0, $IMAGE_HEIGHT_FACTOR);
+
+   ${GLSLProgram.TEXTURE_COORDINATE} = ${GLSLProgram.INPUT_TEXTURE_COORDINATE}.xy;
+   $LEFT = ${GLSLProgram.INPUT_TEXTURE_COORDINATE}.xy - widthStep;
+   $RIGHT = ${GLSLProgram.INPUT_TEXTURE_COORDINATE}.xy + widthStep;
+   $TOP = ${GLSLProgram.INPUT_TEXTURE_COORDINATE}.xy + heightStep;
+   $BOTTOM = ${GLSLProgram.INPUT_TEXTURE_COORDINATE}.xy - heightStep;
+
+   $CENTER_MULTIPLIER = 1.0 + 4.0 * $SHARPNESS;
+   $EDGE_MULTIPLIER = $SHARPNESS;
+}"""
+
+        const val F_SHADER = """
+precision highp float;
+
+varying highp vec2 ${GLSLProgram.TEXTURE_COORDINATE};
+varying highp vec2 $LEFT;
+varying highp vec2 $RIGHT;
+varying highp vec2 $TOP;
+varying highp vec2 $BOTTOM;
+
+varying highp float $CENTER_MULTIPLIER;
+varying highp float $EDGE_MULTIPLIER;
+
+uniform sampler2D ${GLSLProgram.INPUT_TEXTURE};
+
+void main() {
+   mediump vec3 textureColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${GLSLProgram.TEXTURE_COORDINATE}).rgb;
+   mediump vec3 leftTextureColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, $LEFT).rgb;
+   mediump vec3 rightTextureColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, $RIGHT).rgb;
+   mediump vec3 topTextureColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, $TOP).rgb;
+   mediump vec3 bottomTextureColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, $BOTTOM).rgb;
+
+   gl_FragColor = vec4((textureColor * $CENTER_MULTIPLIER - (leftTextureColor * $EDGE_MULTIPLIER + rightTextureColor * $EDGE_MULTIPLIER + topTextureColor * $EDGE_MULTIPLIER + bottomTextureColor * $EDGE_MULTIPLIER)), texture2D(${GLSLProgram.INPUT_TEXTURE}, bottomTextureCoordinate).w);
+}"""
     }
 }

@@ -54,42 +54,41 @@ open class Convolution3x3Effect<T : Convolution3x3Effect.Program> @JvmOverloads 
     companion object {
         const val CONVOLUTION_MATRIX = "convolutionMatrix"
 
-        const val F_SHADER = "" +
-                "precision highp float;\n" +
-                "\n" +
-                "uniform sampler2D ${GLSLProgram.INPUT_TEXTURE};\n" +
-                "\n" +
-                "uniform mediump mat3 $CONVOLUTION_MATRIX;\n" +
-                "\n" +
-                "varying vec2 ${GLSLProgram.TEXTURE_COORDINATE};\n" +
-                "varying vec2 $LEFT;\n" +
-                "varying vec2 $RIGHT;\n" +
-                "\n" +
-                "varying vec2 $TOP;\n" +
-                "varying vec2 $TOP_LEFT;\n" +
-                "varying vec2 $TOP_RIGHT;\n" +
-                "\n" +
-                "varying vec2 $BOTTOM;\n" +
-                "varying vec2 $BOTTOM_LEFT;\n" +
-                "varying vec2 $BOTTOM_RIGHT;\n" +
-                "\n" +
-                "void main()\n" +
-                "{\n" +
-                "    mediump vec4 bottomColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, $BOTTOM);\n" +
-                "    mediump vec4 bottomLeftColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, $BOTTOM_LEFT);\n" +
-                "    mediump vec4 bottomRightColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, $BOTTOM_RIGHT);\n" +
-                "    mediump vec4 centerColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${GLSLProgram.TEXTURE_COORDINATE});\n" +
-                "    mediump vec4 leftColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, $LEFT);\n" +
-                "    mediump vec4 rightColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, $RIGHT);\n" +
-                "    mediump vec4 topColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, $TOP);\n" +
-                "    mediump vec4 topRightColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, $TOP_RIGHT);\n" +
-                "    mediump vec4 topLeftColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, $TOP_LEFT);\n" +
-                "\n" +
-                "    mediump vec4 resultColor = topLeftColor * $CONVOLUTION_MATRIX[0][0] + topColor * $CONVOLUTION_MATRIX[0][1] + topRightColor * $CONVOLUTION_MATRIX[0][2];\n" +
-                "    resultColor += leftColor * $CONVOLUTION_MATRIX[1][0] + centerColor * $CONVOLUTION_MATRIX[1][1] + rightColor * $CONVOLUTION_MATRIX[1][2];\n" +
-                "    resultColor += bottomLeftColor * $CONVOLUTION_MATRIX[2][0] + bottomColor * $CONVOLUTION_MATRIX[2][1] + bottomRightColor * $CONVOLUTION_MATRIX[2][2];\n" +
-                "\n" +
-                "    gl_FragColor = resultColor;\n" +
-                "}"
+        const val F_SHADER = """
+precision highp float;
+
+uniform sampler2D ${GLSLProgram.INPUT_TEXTURE};
+
+uniform mediump mat3 $CONVOLUTION_MATRIX;
+
+varying vec2 ${GLSLProgram.TEXTURE_COORDINATE};
+varying vec2 $LEFT;
+varying vec2 $RIGHT;
+
+varying vec2 $TOP;
+varying vec2 $TOP_LEFT;
+varying vec2 $TOP_RIGHT;
+
+varying vec2 $BOTTOM;
+varying vec2 $BOTTOM_LEFT;
+varying vec2 $BOTTOM_RIGHT;
+
+void main() {
+    mediump vec4 bottomColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, $BOTTOM);
+    mediump vec4 bottomLeftColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, $BOTTOM_LEFT);
+    mediump vec4 bottomRightColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, $BOTTOM_RIGHT);
+    mediump vec4 centerColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${GLSLProgram.TEXTURE_COORDINATE});
+    mediump vec4 leftColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, $LEFT);
+    mediump vec4 rightColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, $RIGHT);
+    mediump vec4 topColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, $TOP);
+    mediump vec4 topRightColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, $TOP_RIGHT);
+    mediump vec4 topLeftColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, $TOP_LEFT);
+
+    mediump vec4 resultColor = topLeftColor * $CONVOLUTION_MATRIX[0][0] + topColor * $CONVOLUTION_MATRIX[0][1] + topRightColor * $CONVOLUTION_MATRIX[0][2];
+    resultColor += leftColor * $CONVOLUTION_MATRIX[1][0] + centerColor * $CONVOLUTION_MATRIX[1][1] + rightColor * $CONVOLUTION_MATRIX[1][2];
+    resultColor += bottomLeftColor * $CONVOLUTION_MATRIX[2][0] + bottomColor * $CONVOLUTION_MATRIX[2][1] + bottomRightColor * $CONVOLUTION_MATRIX[2][2];
+
+    gl_FragColor = resultColor;
+}"""
     }
 }

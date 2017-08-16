@@ -24,21 +24,18 @@ open class GrayscaleEffect
 
     companion object {
 
-        const val F_SHADER = "" +
-                "precision mediump float;\n" +
-                "" +
-                "varying vec2 ${GLSLProgram.TEXTURE_COORDINATE};\n" +
-                "" +
-                "uniform sampler2D ${GLSLProgram.INPUT_TEXTURE};\n" +
-                "" +
-                "const mediump vec3 W = vec3(0.2125, 0.7154, 0.0721);\n" +
-                "" +
-                "void main()\n" +
-                "{\n" +
-                "   lowp vec4 textureColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${GLSLProgram.TEXTURE_COORDINATE});\n" +
-                "   float luminance = dot(textureColor.rgb, W);\n" +
-                "" +
-                "   gl_FragColor = vec4(vec3(luminance), textureColor.a);\n" +
-                "}"
+        const val F_SHADER = """
+precision mediump float;
+varying vec2 ${GLSLProgram.TEXTURE_COORDINATE};
+uniform sampler2D ${GLSLProgram.INPUT_TEXTURE};
+
+const mediump vec3 W = vec3(0.2125, 0.7154, 0.0721);
+
+void main() {
+   lowp vec4 textureColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${GLSLProgram.TEXTURE_COORDINATE});
+   float luminance = dot(textureColor.rgb, W);
+
+   gl_FragColor = vec4(vec3(luminance), textureColor.a);
+}"""
     }
 }

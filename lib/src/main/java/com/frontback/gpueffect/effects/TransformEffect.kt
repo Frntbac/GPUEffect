@@ -132,19 +132,18 @@ open class TransformEffect @JvmOverloads constructor(
         const val TRANSFORM = "transformMatrix"
         const val ORTHOGRAPIC = "orthographicMatrix"
 
-        const val V_SHADER = "" +
-                "attribute vec4 ${GLSLProgram.POSITION};\n" +
-                "attribute vec4 ${GLSLProgram.INPUT_TEXTURE_COORDINATE};\n" +
-                "\n" +
-                "uniform mat4 $TRANSFORM;\n" +
-                "uniform mat4 $ORTHOGRAPIC;\n" +
-                "\n" +
-                "varying vec2 ${GLSLProgram.TEXTURE_COORDINATE};\n" +
-                "\n" +
-                "void main()\n" +
-                "{\n" +
-                "   gl_Position = $TRANSFORM * vec4(${GLSLProgram.POSITION}.xyz, 1.0) * $ORTHOGRAPIC;\n" +
-                "   textureCoordinate = ${GLSLProgram.INPUT_TEXTURE_COORDINATE}.xy;\n" +
-                "}"
+        const val V_SHADER = """
+attribute vec4 ${GLSLProgram.POSITION};
+attribute vec4 ${GLSLProgram.INPUT_TEXTURE_COORDINATE};
+
+uniform mat4 $TRANSFORM;
+uniform mat4 $ORTHOGRAPIC;
+
+varying vec2 ${GLSLProgram.TEXTURE_COORDINATE};
+
+void main() {
+   gl_Position = $TRANSFORM * vec4(${GLSLProgram.POSITION}.xyz, 1.0) * $ORTHOGRAPIC;
+   textureCoordinate = ${GLSLProgram.INPUT_TEXTURE_COORDINATE}.xy;
+}"""
     }
 }

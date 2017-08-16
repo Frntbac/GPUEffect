@@ -20,8 +20,7 @@ import android.graphics.BitmapFactory
 import android.opengl.GLSurfaceView
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import com.frontback.gpueffect.common.GLSLProgram
-import com.frontback.gpueffect.common.GPUEffect
+import com.frontback.gpueffect.common.Effect
 import com.frontback.gpueffect.common.Rotation
 import com.frontback.gpueffect.effects.GrayscaleEffect
 import com.frontback.gpueffect.sample.R
@@ -30,17 +29,16 @@ import javax.microedition.khronos.opengles.GL10
 
 class SurfaceActivity : AppCompatActivity(), GLSurfaceView.Renderer {
 
-    lateinit private var effect: GPUEffect<GLSLProgram>
+    lateinit private var effect: Effect
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_surface)
 
-        effect = GrayscaleEffect()
-                .setInput(BitmapFactory.decodeResource(resources, R.drawable.lena))
-                // We have to do this as the bitmap is interpreted from top left to bottom right but
-                // we draw from bottom left to top right
-                .setRotation(Rotation.UPSIDE_DOWN)
+        effect = GrayscaleEffect() receives BitmapFactory.decodeResource(resources, R.drawable.lena)
+        // We have to do this as the bitmap is interpreted from top left to bottom right but
+        // we draw from bottom left to top right
+        effect.setRotation(Rotation.UPSIDE_DOWN)
 
         val surface = findViewById<GLSurfaceView>(R.id.surface)
         surface.setEGLContextClientVersion(2)

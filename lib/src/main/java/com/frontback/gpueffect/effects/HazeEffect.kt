@@ -81,27 +81,26 @@ open class HazeEffect @JvmOverloads constructor(
         const val DISTANCE = "distance"
         const val SLOPE = "slope"
 
-        const val F_SHADER = "" +
-                "varying vec2 ${GLSLProgram.TEXTURE_COORDINATE};\n" +
-                "" +
-                "uniform sampler2D ${GLSLProgram.INPUT_TEXTURE};\n" +
-                "\n" +
-                "uniform lowp float $DISTANCE;\n" +
-                "uniform highp float $SLOPE;\n" +
-                "\n" +
-                "void main()\n" +
-                "{\n" +
-                "   //todo reconsider precision modifiers	 \n" +
-                "   highp vec4 color = vec4(1.0);//todo reimplement as a parameter\n" +
-                "\n" +
-                "   highp float  d = textureCoordinate.y * $SLOPE  +  $DISTANCE; \n" +
-                "\n" +
-                "   highp vec4 c = texture2D(inputImageTexture, textureCoordinate) ; // consider using unpremultiply\n" +
-                "\n" +
-                "   c = (c - d * color) / (1.0 -d);\n" +
-                "\n" +
-                "   gl_FragColor = c; //consider using premultiply(c);\n" +
-                "}\n"
+        const val F_SHADER = """
+varying vec2 ${GLSLProgram.TEXTURE_COORDINATE};
+
+uniform sampler2D ${GLSLProgram.INPUT_TEXTURE};
+
+uniform lowp float $DISTANCE;
+uniform highp float $SLOPE;
+
+void main() {
+   //todo reconsider precision modifiers
+   highp vec4 color = vec4(1.0);//todo reimplement as a parameter
+
+   highp float  d = textureCoordinate.y * $SLOPE  +  $DISTANCE;
+
+   highp vec4 c = texture2D(inputImageTexture, textureCoordinate) ; // consider using unpremultiply
+
+   c = (c - d * color) / (1.0 -d);
+
+   gl_FragColor = c; //consider using premultiply(c);
+}"""
     }
 
 }

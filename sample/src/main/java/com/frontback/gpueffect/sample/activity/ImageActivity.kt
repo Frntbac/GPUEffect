@@ -33,7 +33,7 @@ class ImageActivity : AppCompatActivity() {
         val lena = BitmapFactory.decodeResource(resources, R.drawable.lena)
 
         val transformed = (HazeEffect() + EmbossEffect())
-                .setInput(lena)
+                .receives(lena)
                 .bitmap
 
         findViewById<ImageView>(R.id.image).setImageBitmap(transformed)

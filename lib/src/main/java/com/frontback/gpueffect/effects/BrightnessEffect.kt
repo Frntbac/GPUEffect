@@ -51,17 +51,16 @@ open class BrightnessEffect @JvmOverloads constructor(
 
         const val BRIGHTNESS = "brightness"
 
-        const val F_SHADER = "" +
-                "varying highp vec2 ${GLSLProgram.TEXTURE_COORDINATE};\n" +
-                " \n" +
-                " uniform sampler2D ${GLSLProgram.INPUT_TEXTURE};\n" +
-                " uniform lowp float $BRIGHTNESS;\n" +
-                " \n" +
-                " void main()\n" +
-                " {\n" +
-                "     lowp vec4 textureColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${GLSLProgram.TEXTURE_COORDINATE});\n" +
-                "     \n" +
-                "     gl_FragColor = vec4((textureColor.rgb + vec3($BRIGHTNESS)), textureColor.w);\n" +
-                " }"
+        const val F_SHADER = """
+varying highp vec2 ${GLSLProgram.TEXTURE_COORDINATE};
+
+uniform sampler2D ${GLSLProgram.INPUT_TEXTURE};
+uniform lowp float $BRIGHTNESS;
+
+void main() {
+   lowp vec4 textureColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${GLSLProgram.TEXTURE_COORDINATE});
+
+   gl_FragColor = vec4((textureColor.rgb + vec3($BRIGHTNESS)), textureColor.w);
+}"""
     }
 }

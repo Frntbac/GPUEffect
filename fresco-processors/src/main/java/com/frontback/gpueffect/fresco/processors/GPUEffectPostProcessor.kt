@@ -29,7 +29,7 @@ open class GPUEffectPostProcessor @JvmOverloads constructor(
 ) : BasePostprocessor() {
 
     override fun process(dest: Bitmap?, source: Bitmap?) {
-        super.process(dest, source?.let { effect.setInput(it).bitmap })
+        super.process(dest, source?.let { effect.receives(it).bitmap })
     }
 
     @Suppress("UNCHECKED_CAST")

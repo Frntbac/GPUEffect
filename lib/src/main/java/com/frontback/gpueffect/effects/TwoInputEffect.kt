@@ -32,19 +32,22 @@ open class TwoInputEffect<T : TwoInputEffect.Program> @JvmOverloads constructor(
 
     open class Program constructor(fragmentShader: String)
         : GLSLProgram(V_SHADER, fragmentShader) {
-        var filterSecondTextureCoordinateAttribute: Int = 0
+        var textureCoordinate2Attribute: Int = 0
             private set
-        var filterInputTextureUniform2: Int = 0
+        var inputTexture2Uniform: Int = 0
             private set
 
         @CallSuper
         override fun onInitialized(programId: Int) {
-            filterSecondTextureCoordinateAttribute = loadAttributeLocation(INPUT_TEXTURE_COORDINATE2)
-            filterInputTextureUniform2 = loadUniformLocation(INPUT_TEXTURE2)
+            textureCoordinate2Attribute = loadAttributeLocation(INPUT_TEXTURE_COORDINATE2)
+            inputTexture2Uniform = loadUniformLocation(INPUT_TEXTURE2)
         }
     }
 
-    private val texture2CoordinatesBuffer = ByteBuffer.allocateDirect(32).order(ByteOrder.nativeOrder()).asFloatBuffer()
+    private val texture2CoordinatesBuffer =
+            ByteBuffer.allocateDirect(32)
+                    .order(ByteOrder.nativeOrder())
+                    .asFloatBuffer()
 
     @CallSuper
     override fun onInit() {
@@ -52,8 +55,8 @@ open class TwoInputEffect<T : TwoInputEffect.Program> @JvmOverloads constructor(
             if (!it.isInitialized) {
                 it.init(outputWidth, outputHeight)
             }
-            setRotation(Rotation.NONE, false, false)
         }
+        setRotation(Rotation.NONE, false, false)
     }
 
     @CallSuper
@@ -66,18 +69,18 @@ open class TwoInputEffect<T : TwoInputEffect.Program> @JvmOverloads constructor(
         texture2?.let {
             GLES20.glActiveTexture(GLES20.GL_TEXTURE3)
             GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, it.id)
-            GLES20.glUniform1i(program.filterInputTextureUniform2, 3)
+            GLES20.glUniform1i(program.inputTexture2Uniform, 3)
 
             texture2CoordinatesBuffer.rewind()
-            GLES20.glVertexAttribPointer(program.filterSecondTextureCoordinateAttribute, 2, GLES20.GL_FLOAT, false, 0, texture2CoordinatesBuffer)
-            GLES20.glEnableVertexAttribArray(program.filterSecondTextureCoordinateAttribute)
+            GLES20.glVertexAttribPointer(program.textureCoordinate2Attribute, 2, GLES20.GL_FLOAT, false, 0, texture2CoordinatesBuffer)
+            GLES20.glEnableVertexAttribArray(program.textureCoordinate2Attribute)
         }
     }
 
     @CallSuper
     override fun onPostDrawArrays() {
         if (texture2 != null) {
-            GLES20.glDisableVertexAttribArray(program.filterSecondTextureCoordinateAttribute)
+            GLES20.glDisableVertexAttribArray(program.textureCoordinate2Attribute)
         }
     }
 
@@ -87,6 +90,9 @@ open class TwoInputEffect<T : TwoInputEffect.Program> @JvmOverloads constructor(
             texture2 = value
         }
 
+    infix fun alsoReceives(texture: Texture?) = also {
+        secondInput = texture
+    }
 
     open fun setRotation(@Rotation rotation: Int, flipHorizontal: Boolean, flipVertical: Boolean) {
         var array = Effect.getRotation(rotation)
@@ -108,19 +114,18 @@ open class TwoInputEffect<T : TwoInputEffect.Program> @JvmOverloads constructor(
         const val INPUT_TEXTURE_COORDINATE2 = "inputTextureCoordinate2"
         const val TEXTURE_COORDINATE2 = "textureCoordinate2"
 
-        const val V_SHADER = "" +
-                "attribute vec4 ${GLSLProgram.POSITION};\n" +
-                "attribute vec4 ${GLSLProgram.INPUT_TEXTURE_COORDINATE};\n" +
-                "attribute vec4 $INPUT_TEXTURE_COORDINATE2;\n" +
-                "\n" +
-                "varying vec2 ${GLSLProgram.TEXTURE_COORDINATE};\n" +
-                "varying vec2 $TEXTURE_COORDINATE2;\n" +
-                "\n" +
-                "void main()\n" +
-                "{\n" +
-                "   gl_Position = ${GLSLProgram.POSITION};\n" +
-                "   ${GLSLProgram.TEXTURE_COORDINATE} = ${GLSLProgram.INPUT_TEXTURE_COORDINATE}.xy;\n" +
-                "   $TEXTURE_COORDINATE2 = $INPUT_TEXTURE_COORDINATE2.xy;\n" +
-                "}"
+        const val V_SHADER = """
+attribute vec4 ${GLSLProgram.POSITION};
+attribute vec4 ${GLSLProgram.INPUT_TEXTURE_COORDINATE};
+attribute vec4 $INPUT_TEXTURE_COORDINATE2;
+
+varying vec2 ${GLSLProgram.TEXTURE_COORDINATE};
+varying vec2 $TEXTURE_COORDINATE2;
+
+void main() {
+   gl_Position = ${GLSLProgram.POSITION};
+   ${GLSLProgram.TEXTURE_COORDINATE} = ${GLSLProgram.INPUT_TEXTURE_COORDINATE}.xy;
+   $TEXTURE_COORDINATE2 = $INPUT_TEXTURE_COORDINATE2.xy;
+}"""
     }
 }

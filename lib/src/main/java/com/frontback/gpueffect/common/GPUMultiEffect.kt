@@ -16,7 +16,6 @@
 
 package com.frontback.gpueffect.common
 
-import android.graphics.Bitmap
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
@@ -61,7 +60,7 @@ open class GPUMultiEffect(vararg _effects: Effect) : Effect {
     val cubeBuffer: FloatBuffer by lazy {
         ByteBuffer.allocateDirect(32)
                 .order(ByteOrder.nativeOrder())
-                .asFloatBuffer().apply { put(GPUEffect.CUBE).flip() }
+                .asFloatBuffer().apply { put(Effect.CUBE).flip() }
     }
     val textureBuffer: FloatBuffer by lazy {
         ByteBuffer.allocateDirect(32)
@@ -70,7 +69,11 @@ open class GPUMultiEffect(vararg _effects: Effect) : Effect {
     }
 
     val effects = mutableListOf<Effect>()
-    protected var renderFrameBuffer: FrameBuffer? = null
+
+    /**
+     * {@inheritDoc}
+     */
+    override var renderFrameBuffer: FrameBuffer? = null
 
     override val outputTexture: Texture?
         get() = renderFrameBuffer?.texture
@@ -96,14 +99,21 @@ open class GPUMultiEffect(vararg _effects: Effect) : Effect {
         if (firstFBO == null) {
             firstFBO = FBOTexture()
         }
-        firstFBO!!.init(outputWidth, outputHeight)
+        if (!firstFBO!!.isInitialized) {
+            firstFBO!!.init(outputWidth, outputHeight)
+        }
         if (secondFBO == null) {
             secondFBO = FBOTexture()
         }
-        secondFBO!!.init(outputWidth, outputHeight)
+        if (!secondFBO!!.isInitialized) {
+            secondFBO!!.init(outputWidth, outputHeight)
+        }
 
-        input?.init(outputWidth, outputHeight)
-
+        input?.run {
+            if (!isInitialized) {
+                init(outputWidth, outputHeight)
+            }
+        }
         onInit()
     }
 
@@ -112,14 +122,12 @@ open class GPUMultiEffect(vararg _effects: Effect) : Effect {
         this.rotation = rotation
     }
 
+    protected fun getRotation() = rotation
+
     override fun setRotationArray(array: FloatArray) {
         textureBuffer.clear()
         textureBuffer.put(array)
         textureBuffer.flip()
-    }
-
-    override fun setRenderInto(frameBuffer: FrameBuffer?) = also {
-        renderFrameBuffer = frameBuffer
     }
 
     /**
@@ -152,11 +160,11 @@ open class GPUMultiEffect(vararg _effects: Effect) : Effect {
         effects.forEachIndexed { i, current ->
             var fboSet = false
             if (i == effects.size - 1) {
-                renderFrameBuffer?.run { current.setRenderInto(this) }
+                renderFrameBuffer?.run { current.drawsInto(this) }
                 fboSet = true
             } else {
                 if (current.outputTexture == null) {
-                    current.setRenderInto(fbo)
+                    current.drawsInto(fbo)
                     fbo = if (fbo === firstFBO) {
                         secondFBO
                     } else {
@@ -182,7 +190,7 @@ open class GPUMultiEffect(vararg _effects: Effect) : Effect {
                 current.input = null
             }
             if (fboSet) {
-                current.setRenderInto(null)
+                current.drawsInto(null)
             }
         }
         return outputTexture
@@ -192,6 +200,7 @@ open class GPUMultiEffect(vararg _effects: Effect) : Effect {
      * {@inheritDoc}
      */
     override final fun destroy() {
+        onPreDestroy()
         renderFrameBuffer?.destroy()
         firstFBO?.destroy()
         secondFBO?.destroy()
@@ -199,6 +208,13 @@ open class GPUMultiEffect(vararg _effects: Effect) : Effect {
         effects.forEach { it.destroy() }
         isInitialized = false
         onDestroy()
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    override fun onPreDestroy() {
+
     }
 
     /**
@@ -225,28 +241,6 @@ open class GPUMultiEffect(vararg _effects: Effect) : Effect {
     }
 
     operator fun plus(effect: Effect) = GPUMultiEffect(this, effect)
-
-    /**
-     * {@inheritDoc}
-     */
-    override fun setInput(effect: Effect) = also {
-        input = effect.outputTexture
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    override fun setInput(frameBuffer: FrameBuffer) = also {
-        input = frameBuffer.texture
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    override fun setInput(bitmap: Bitmap) = also {
-        setOutputSize(bitmap.width, bitmap.height)
-        input = BitmapTexture(bitmap)
-    }
 
     /**
      * {@inheritDoc}

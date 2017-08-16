@@ -79,50 +79,49 @@ open class ToonEffect @JvmOverloads constructor(
         const val THRESHOLD = "threshold"
         const val QUANTIZATION_LEVELS = "quantizationLevels"
 
-        const val F_SHADER = "" +
-                "precision highp float;\n" +
-                "\n" +
-                "varying vec2 ${GLSLProgram.TEXTURE_COORDINATE};\n" +
-                "varying vec2 $LEFT;\n" +
-                "varying vec2 $RIGHT;\n" +
-                "\n" +
-                "varying vec2 $TOP;\n" +
-                "varying vec2 $TOP_LEFT;\n" +
-                "varying vec2 $TOP_RIGHT;\n" +
-                "\n" +
-                "varying vec2 $BOTTOM;\n" +
-                "varying vec2 $BOTTOM_LEFT;\n" +
-                "varying vec2 $BOTTOM_RIGHT;\n" +
-                "\n" +
-                "uniform sampler2D ${GLSLProgram.INPUT_TEXTURE};\n" +
-                "\n" +
-                "uniform highp float $THRESHOLD;\n" +
-                "uniform highp float $QUANTIZATION_LEVELS;\n" +
-                "\n" +
-                "const highp vec3 W = vec3(0.2125, 0.7154, 0.0721);\n" +
-                "\n" +
-                "void main()\n" +
-                "{\n" +
-                "   vec4 textureColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${GLSLProgram.TEXTURE_COORDINATE});\n" +
-                "\n" +
-                "   float bottomLeftIntensity = texture2D(${GLSLProgram.INPUT_TEXTURE}, $BOTTOM_LEFT).r;\n" +
-                "   float topRightIntensity = texture2D(${GLSLProgram.INPUT_TEXTURE}, $TOP_RIGHT).r;\n" +
-                "   float topLeftIntensity = texture2D(${GLSLProgram.INPUT_TEXTURE}, $TOP_LEFT).r;\n" +
-                "   float bottomRightIntensity = texture2D(${GLSLProgram.INPUT_TEXTURE}, $BOTTOM_RIGHT).r;\n" +
-                "   float leftIntensity = texture2D(${GLSLProgram.INPUT_TEXTURE}, $LEFT).r;\n" +
-                "   float rightIntensity = texture2D(${GLSLProgram.INPUT_TEXTURE}, $RIGHT).r;\n" +
-                "   float bottomIntensity = texture2D(${GLSLProgram.INPUT_TEXTURE}, $BOTTOM).r;\n" +
-                "   float topIntensity = texture2D(${GLSLProgram.INPUT_TEXTURE}, $TOP).r;\n" +
-                "   float h = -topLeftIntensity - 2.0 * topIntensity - topRightIntensity + bottomLeftIntensity + 2.0 * bottomIntensity + bottomRightIntensity;\n" +
-                "   float v = -bottomLeftIntensity - 2.0 * leftIntensity - topLeftIntensity + bottomRightIntensity + 2.0 * rightIntensity + topRightIntensity;\n" +
-                "\n" +
-                "   float mag = length(vec2(h, v));\n" +
-                "\n" +
-                "   vec3 posterizedImageColor = floor((textureColor.rgb * $QUANTIZATION_LEVELS) + 0.5) / $QUANTIZATION_LEVELS;\n" +
-                "\n" +
-                "   float thresholdTest = 1.0 - step($THRESHOLD, mag);\n" +
-                "\n" +
-                "   gl_FragColor = vec4(posterizedImageColor * thresholdTest, textureColor.a);\n" +
-                "}"
+        const val F_SHADER = """
+precision highp float;
+
+varying vec2 ${GLSLProgram.TEXTURE_COORDINATE};
+varying vec2 $LEFT;
+varying vec2 $RIGHT;
+
+varying vec2 $TOP;
+varying vec2 $TOP_LEFT;
+varying vec2 $TOP_RIGHT;
+
+varying vec2 $BOTTOM;
+varying vec2 $BOTTOM_LEFT;
+varying vec2 $BOTTOM_RIGHT;
+
+uniform sampler2D ${GLSLProgram.INPUT_TEXTURE};
+
+uniform highp float $THRESHOLD;
+uniform highp float $QUANTIZATION_LEVELS;
+
+const highp vec3 W = vec3(0.2125, 0.7154, 0.0721);
+
+void main() {
+   vec4 textureColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${GLSLProgram.TEXTURE_COORDINATE});
+
+   float bottomLeftIntensity = texture2D(${GLSLProgram.INPUT_TEXTURE}, $BOTTOM_LEFT).r;
+   float topRightIntensity = texture2D(${GLSLProgram.INPUT_TEXTURE}, $TOP_RIGHT).r;
+   float topLeftIntensity = texture2D(${GLSLProgram.INPUT_TEXTURE}, $TOP_LEFT).r;
+   float bottomRightIntensity = texture2D(${GLSLProgram.INPUT_TEXTURE}, $BOTTOM_RIGHT).r;
+   float leftIntensity = texture2D(${GLSLProgram.INPUT_TEXTURE}, $LEFT).r;
+   float rightIntensity = texture2D(${GLSLProgram.INPUT_TEXTURE}, $RIGHT).r;
+   float bottomIntensity = texture2D(${GLSLProgram.INPUT_TEXTURE}, $BOTTOM).r;
+   float topIntensity = texture2D(${GLSLProgram.INPUT_TEXTURE}, $TOP).r;
+   float h = -topLeftIntensity - 2.0 * topIntensity - topRightIntensity + bottomLeftIntensity + 2.0 * bottomIntensity + bottomRightIntensity;
+   float v = -bottomLeftIntensity - 2.0 * leftIntensity - topLeftIntensity + bottomRightIntensity + 2.0 * rightIntensity + topRightIntensity;
+
+   float mag = length(vec2(h, v));
+
+   vec3 posterizedImageColor = floor((textureColor.rgb * $QUANTIZATION_LEVELS) + 0.5) / $QUANTIZATION_LEVELS;
+
+   float thresholdTest = 1.0 - step($THRESHOLD, mag);
+
+   gl_FragColor = vec4(posterizedImageColor * thresholdTest, textureColor.a);
+}"""
     }
 }

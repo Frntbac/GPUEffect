@@ -31,21 +31,20 @@ open class AlphaBlendEffect(
 
     companion object {
 
-        const val F_SHADER = "" +
-                "varying highp vec2 ${GLSLProgram.TEXTURE_COORDINATE};\n" +
-                " varying highp vec2 $TEXTURE_COORDINATE2;\n" +
-                "\n" +
-                " uniform sampler2D ${GLSLProgram.INPUT_TEXTURE};\n" +
-                " uniform sampler2D $INPUT_TEXTURE2;\n" +
-                " \n" +
-                " uniform lowp float $MIXTURE_PERCENT;\n" +
-                "\n" +
-                " void main()\n" +
-                " {\n" +
-                "   lowp vec4 textureColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${GLSLProgram.TEXTURE_COORDINATE});\n" +
-                "   lowp vec4 textureColor2 = texture2D($INPUT_TEXTURE2, $TEXTURE_COORDINATE2);\n" +
-                "\n" +
-                "   gl_FragColor = vec4(mix(textureColor.rgb, textureColor2.rgb, textureColor2.a * $MIXTURE_PERCENT), textureColor.a);\n" +
-                " }";
+        const val F_SHADER = """
+varying highp vec2 ${GLSLProgram.TEXTURE_COORDINATE};
+varying highp vec2 $TEXTURE_COORDINATE2;
+
+uniform sampler2D ${GLSLProgram.INPUT_TEXTURE};
+uniform sampler2D $INPUT_TEXTURE2;
+
+uniform lowp float $MIXTURE_PERCENT;
+
+void main() {
+    lowp vec4 textureColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${GLSLProgram.TEXTURE_COORDINATE});
+    lowp vec4 textureColor2 = texture2D($INPUT_TEXTURE2, $TEXTURE_COORDINATE2);
+
+    gl_FragColor = vec4(mix(textureColor.rgb, textureColor2.rgb, textureColor2.a * $MIXTURE_PERCENT), textureColor.a);
+}"""
     }
 }

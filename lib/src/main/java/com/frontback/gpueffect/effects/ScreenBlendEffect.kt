@@ -26,19 +26,18 @@ open class ScreenBlendEffect @JvmOverloads constructor(
 
     companion object {
 
-        const val F_SHADER = "" +
-                "varying highp vec2 ${GLSLProgram.TEXTURE_COORDINATE};\n" +
-                "varying highp vec2 $TEXTURE_COORDINATE2;\n" +
-                "\n" +
-                "uniform sampler2D ${GLSLProgram.INPUT_TEXTURE};\n" +
-                "uniform sampler2D $INPUT_TEXTURE2;\n" +
-                "\n" +
-                "void main()\n" +
-                "{\n" +
-                "   mediump vec4 textureColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${GLSLProgram.TEXTURE_COORDINATE});\n" +
-                "   mediump vec4 textureColor2 = texture2D($INPUT_TEXTURE2, $TEXTURE_COORDINATE2);\n" +
-                "   mediump vec4 whiteColor = vec4(1.0);\n" +
-                "   gl_FragColor = whiteColor - ((whiteColor - textureColor2) * (whiteColor - textureColor));\n" +
-                " }"
+        const val F_SHADER = """
+varying highp vec2 ${GLSLProgram.TEXTURE_COORDINATE};
+varying highp vec2 $TEXTURE_COORDINATE2;
+
+uniform sampler2D ${GLSLProgram.INPUT_TEXTURE};
+uniform sampler2D $INPUT_TEXTURE2;
+
+void main() {
+   mediump vec4 textureColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${GLSLProgram.TEXTURE_COORDINATE});
+   mediump vec4 textureColor2 = texture2D($INPUT_TEXTURE2, $TEXTURE_COORDINATE2);
+   mediump vec4 whiteColor = vec4(1.0);
+   gl_FragColor = whiteColor - ((whiteColor - textureColor2) * (whiteColor - textureColor));
+}"""
     }
 }

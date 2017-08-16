@@ -47,6 +47,8 @@ interface Effect {
      */
     var input: Texture?
 
+    var renderFrameBuffer: FrameBuffer?
+
     /**
      * Returns the texture in which it will draw itself if any
      *
@@ -65,9 +67,11 @@ interface Effect {
     fun onInit()
 
     /**
-     * Pass the {@see FrameBuffer} in which to draw
+     * Sets the {@see FrameBuffer} in which to draw
      */
-    fun setRenderInto(frameBuffer: FrameBuffer?): Effect
+    infix fun drawsInto(frameBuffer: FrameBuffer?) = also {
+        renderFrameBuffer = frameBuffer
+    }
 
     /**
      * Draw the effect
@@ -90,6 +94,11 @@ interface Effect {
      * Destroy all objects attached to the effect
      */
     fun destroy()
+
+    /**
+     * Called before destroying the attached objects
+     */
+    fun onPreDestroy()
 
     /**
      * Called when the attached objects have been destroyed
@@ -137,11 +146,22 @@ interface Effect {
 
     /**
      * Sets the input of this effect
+     * @param texture used as input
+     * @return this
+     */
+    infix fun receives(texture: Texture?) = also {
+        input = texture
+    }
+
+    /**
+     * Sets the input of this effect
      *
      * @param effect from with to retrieve the {@see Texture} as input
      * @return this
      */
-    fun setInput(effect: Effect): Effect
+    infix fun receives(effect: Effect) = also {
+        this.input = effect.outputTexture
+    }
 
     /**
      * Sets the input of this effect
@@ -149,7 +169,9 @@ interface Effect {
      * @param frameBuffer from with to retrieve the {@see Texture} as input
      * @return this
      */
-    fun setInput(frameBuffer: FrameBuffer): Effect
+    infix fun receives(frameBuffer: FrameBuffer) = also {
+        this.input = frameBuffer.texture
+    }
 
     /**
      * Sets the input of this effect
@@ -157,20 +179,34 @@ interface Effect {
      * @param bitmap from with to create the {@see BitmapTexture} as input
      * @return this
      */
-    fun setInput(bitmap: Bitmap): Effect
-
+    infix fun receives(bitmap: Bitmap) = also {
+        setOutputSize(bitmap.width, bitmap.height)
+        val input = BitmapTexture(bitmap)
+        this.input = input
+    }
 
     companion object {
+
+        internal val CUBE = floatArrayOf(-1f, -1f, // bottom left
+                +1f, -1f, // bottom right
+                -1f, +1f, // top left
+                +1f, +1f)// top right
+
+        val ON_SCREEN : FrameBuffer? = null
+
         fun getRotation(@Rotation rotation: Int) = when (rotation) {
-            Rotation.NONE -> Rotation.ARRAY_NONE
-            Rotation._90 -> Rotation.ARRAY_90
-            Rotation._180 -> Rotation.ARRAY_180
-            Rotation._270 -> Rotation.ARRAY_270
-            Rotation.UPSIDE_DOWN -> Rotation.ARRAY_UPSIDE_DOWN
-            Rotation.UPSIDE_DOWN_90 -> Rotation.ARRAY_UPSIDE_DOWN_90
-            Rotation.UPSIDE_DOWN_180 -> Rotation.ARRAY_UPSIDE_DOWN_180
-            Rotation.UPSIDE_DOWN_270 -> Rotation.ARRAY_UPSIDE_DOWN_270
+            Rotation.NONE -> Rotation.ARRAY_NONE.copyOf()
+            Rotation._90 -> Rotation.ARRAY_90.copyOf()
+            Rotation._180 -> Rotation.ARRAY_180.copyOf()
+            Rotation._270 -> Rotation.ARRAY_270.copyOf()
+            Rotation.UPSIDE_DOWN -> Rotation.ARRAY_UPSIDE_DOWN.copyOf()
+            Rotation.UPSIDE_DOWN_90 -> Rotation.ARRAY_UPSIDE_DOWN_90.copyOf()
+            Rotation.UPSIDE_DOWN_180 -> Rotation.ARRAY_UPSIDE_DOWN_180.copyOf()
+            Rotation.UPSIDE_DOWN_270 -> Rotation.ARRAY_UPSIDE_DOWN_270.copyOf()
             else -> throw IllegalArgumentException("$rotation is not a valid rotation argument")
         }
+
+        fun shouldInvertWidthAndHeight(rotation: Int) = rotation in
+                intArrayOf(Rotation._90, Rotation._270, Rotation.UPSIDE_DOWN_90, Rotation.UPSIDE_DOWN_270)
     }
 }

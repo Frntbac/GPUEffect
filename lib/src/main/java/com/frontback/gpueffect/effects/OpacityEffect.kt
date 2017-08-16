@@ -50,17 +50,16 @@ open class OpacityEffect @JvmOverloads constructor(
     companion object {
         const val OPACITY = "opacity"
 
-        const val F_SHADER = "" +
-                "  varying highp vec2 ${GLSLProgram.TEXTURE_COORDINATE};\n" +
-                "  \n" +
-                "  uniform sampler2D ${GLSLProgram.INPUT_TEXTURE};\n" +
-                "  uniform lowp float $OPACITY;\n" +
-                "  \n" +
-                "  void main()\n" +
-                "  {\n" +
-                "      lowp vec4 textureColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${GLSLProgram.TEXTURE_COORDINATE});\n" +
-                "      \n" +
-                "      gl_FragColor = vec4(textureColor.rgb, textureColor.a * $OPACITY);\n" +
-                "  }\n"
+        const val F_SHADER = """
+varying highp vec2 ${GLSLProgram.TEXTURE_COORDINATE};
+
+uniform sampler2D ${GLSLProgram.INPUT_TEXTURE};
+uniform lowp float $OPACITY;
+
+void main() {
+    lowp vec4 textureColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${GLSLProgram.TEXTURE_COORDINATE});
+
+    gl_FragColor = vec4(textureColor.rgb, textureColor.a * $OPACITY);
+}"""
     }
 }

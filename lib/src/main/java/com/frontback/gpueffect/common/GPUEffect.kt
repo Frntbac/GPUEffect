@@ -16,7 +16,6 @@
 
 package com.frontback.gpueffect.common
 
-import android.graphics.Bitmap
 import android.graphics.PointF
 import android.opengl.GLES20
 import java.nio.ByteBuffer
@@ -34,7 +33,7 @@ open class GPUEffect<T : GLSLProgram> @JvmOverloads constructor(
     val cubeBuffer: FloatBuffer by lazy {
         ByteBuffer.allocateDirect(32)
                 .order(ByteOrder.nativeOrder())
-                .asFloatBuffer().apply { put(CUBE).flip() }
+                .asFloatBuffer().apply { put(Effect.CUBE).flip() }
     }
     val textureBuffer: FloatBuffer by lazy {
         ByteBuffer.allocateDirect(32)
@@ -51,7 +50,10 @@ open class GPUEffect<T : GLSLProgram> @JvmOverloads constructor(
     override var isInitialized = false
         protected set
 
-    protected var renderFrameBuffer: FrameBuffer? = null
+    /**
+     * {@inheritDoc}
+     */
+    override var renderFrameBuffer: FrameBuffer? = null
 
     override final var outputWidth: Int = 0
         /**
@@ -186,6 +188,7 @@ open class GPUEffect<T : GLSLProgram> @JvmOverloads constructor(
      * {@inheritDoc}
      */
     override final fun destroy() {
+        onPreDestroy()
         renderFrameBuffer?.destroy()
         program.destroy()
         input?.destroy()
@@ -196,38 +199,15 @@ open class GPUEffect<T : GLSLProgram> @JvmOverloads constructor(
     /**
      * {@inheritDoc}
      */
+    override fun onPreDestroy() {
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     override fun onDestroy() {
 
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    override fun setRenderInto(frameBuffer: FrameBuffer?) = also {
-        renderFrameBuffer = frameBuffer
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    override fun setInput(bitmap: Bitmap) = also {
-        setOutputSize(bitmap.width, bitmap.height)
-        val input = BitmapTexture(bitmap)
-        this.input = input
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    override fun setInput(frameBuffer: FrameBuffer) = also {
-        this.input = frameBuffer.texture
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    override fun setInput(effect: Effect) = also {
-        this.input = effect.outputTexture
     }
 
     /**
@@ -244,6 +224,8 @@ open class GPUEffect<T : GLSLProgram> @JvmOverloads constructor(
         invertWidthAndHeightIfNeeded(rotation)
         this.rotation = rotation
     }
+
+    protected fun getRotation() = rotation
 
     /**
      * {@inheritDoc}
@@ -275,35 +257,35 @@ open class GPUEffect<T : GLSLProgram> @JvmOverloads constructor(
 
     operator fun plus(effect: Effect) = GPUMultiEffect(this, effect)
 
-    protected fun setInteger(location: Int, intValue: Int) {
+    fun setInteger(location: Int, intValue: Int) {
         runOnDraw(Runnable { GLES20.glUniform1i(location, intValue) })
     }
 
-    protected fun setFloat(location: Int, floatValue: Float) {
+    fun setFloat(location: Int, floatValue: Float) {
         runOnDraw(Runnable { GLES20.glUniform1f(location, floatValue) })
     }
 
-    protected fun setFloatVec2(location: Int, arrayValue: FloatArray) {
+    fun setFloatVec2(location: Int, arrayValue: FloatArray) {
         runOnDraw(Runnable { GLES20.glUniform2fv(location, 1, FloatBuffer.wrap(arrayValue)) })
     }
 
-    protected fun setFloatVec3(location: Int, arrayValue: FloatArray) {
+    fun setFloatVec3(location: Int, arrayValue: FloatArray) {
         runOnDraw(Runnable { GLES20.glUniform3fv(location, 1, FloatBuffer.wrap(arrayValue)) })
     }
 
-    protected fun setFloatVec4(location: Int, arrayValue: FloatArray) {
+    fun setFloatVec4(location: Int, arrayValue: FloatArray) {
         runOnDraw(Runnable { GLES20.glUniform4fv(location, 1, FloatBuffer.wrap(arrayValue)) })
     }
 
-    protected fun setFloatArray(location: Int, arrayValue: FloatArray) {
+    fun setFloatArray(location: Int, arrayValue: FloatArray) {
         runOnDraw(Runnable { GLES20.glUniform1fv(location, arrayValue.size, FloatBuffer.wrap(arrayValue)) })
     }
 
-    protected fun setPoint(location: Int, point: PointF) {
+    fun setPoint(location: Int, point: PointF) {
         setPoint(location, point.x, point.y)
     }
 
-    protected fun setPoint(location: Int, x: Float, y: Float) {
+    fun setPoint(location: Int, x: Float, y: Float) {
         runOnDraw(Runnable {
             val vec2 = FloatArray(2)
             vec2[0] = x
@@ -312,11 +294,11 @@ open class GPUEffect<T : GLSLProgram> @JvmOverloads constructor(
         })
     }
 
-    protected fun setUniformMatrix3f(location: Int, matrix: FloatArray) {
+    fun setUniformMatrix3f(location: Int, matrix: FloatArray) {
         runOnDraw(Runnable { GLES20.glUniformMatrix3fv(location, 1, false, matrix, 0) })
     }
 
-    protected fun setUniformMatrix4f(location: Int, matrix: FloatArray) {
+    fun setUniformMatrix4f(location: Int, matrix: FloatArray) {
         runOnDraw(Runnable { GLES20.glUniformMatrix4fv(location, 1, false, matrix, 0) })
     }
 
@@ -330,20 +312,12 @@ open class GPUEffect<T : GLSLProgram> @JvmOverloads constructor(
      * {@inheritDoc}
      */
     override fun setOutputSize(width: Int, height: Int) = also {
-        if (rotation in intArrayOf(Rotation._90, Rotation._270,
-                Rotation.UPSIDE_DOWN_90, Rotation.UPSIDE_DOWN_270)) {
+        if (Effect.shouldInvertWidthAndHeight(rotation)) {
             outputWidth = height
             outputHeight = width
         } else {
             outputWidth = width
             outputHeight = height
         }
-    }
-
-    companion object {
-        internal val CUBE = floatArrayOf(-1f, -1f, // bottom left
-                +1f, -1f, // bottom right
-                -1f, +1f, // top left
-                +1f, +1f)// top right
     }
 }

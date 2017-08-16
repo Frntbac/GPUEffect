@@ -64,20 +64,19 @@ open class ColorMatrixEffect @JvmOverloads constructor(
         const val COLOR_MATRIX = "colorMatrix"
         const val INTENSITY = "intensity"
 
-        const val F_SHADER = "" +
-                "varying highp vec2 ${GLSLProgram.TEXTURE_COORDINATE};\n" +
-                "\n" +
-                "uniform sampler2D ${GLSLProgram.INPUT_TEXTURE};\n" +
-                "\n" +
-                "uniform lowp mat4 $COLOR_MATRIX;\n" +
-                "uniform lowp float $INTENSITY;\n" +
-                "\n" +
-                "void main()\n" +
-                "{\n" +
-                "    lowp vec4 textureColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${GLSLProgram.TEXTURE_COORDINATE});\n" +
-                "    lowp vec4 outputColor = textureColor * $COLOR_MATRIX;\n" +
-                "    \n" +
-                "    gl_FragColor = ($INTENSITY * outputColor) + ((1.0 - $INTENSITY) * textureColor);\n" +
-                "}"
+        const val F_SHADER = """
+varying highp vec2 ${GLSLProgram.TEXTURE_COORDINATE};
+
+uniform sampler2D ${GLSLProgram.INPUT_TEXTURE};
+
+uniform lowp mat4 $COLOR_MATRIX;
+uniform lowp float $INTENSITY;
+
+void main() {
+    lowp vec4 textureColor = texture2D(${GLSLProgram.INPUT_TEXTURE}, ${GLSLProgram.TEXTURE_COORDINATE});
+    lowp vec4 outputColor = textureColor * $COLOR_MATRIX;
+
+    gl_FragColor = ($INTENSITY * outputColor) + ((1.0 - $INTENSITY) * textureColor);
+}"""
     }
 }

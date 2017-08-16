@@ -103,45 +103,44 @@ open class TextureSampling3x3Effect<T : TextureSampling3x3Effect.Program> @JvmOv
         const val BOTTOM_LEFT = "bottomLeftTextureCoordinate"
         const val BOTTOM_RIGHT = "bottomRightTextureCoordinate"
 
-        const val V_SHADER = "" +
-                "attribute vec4 ${GLSLProgram.POSITION};\n" +
-                "attribute vec4 ${GLSLProgram.INPUT_TEXTURE_COORDINATE};\n" +
-                "\n" +
-                "uniform highp float $TEXEL_WIDTH; \n" +
-                "uniform highp float $TEXEL_HEIGHT; \n" +
-                "\n" +
-                "varying vec2 ${GLSLProgram.TEXTURE_COORDINATE};\n" +
-                "varying vec2 $LEFT;\n" +
-                "varying vec2 $RIGHT;\n" +
-                "\n" +
-                "varying vec2 $TOP;\n" +
-                "varying vec2 $TOP_LEFT;\n" +
-                "varying vec2 $TOP_RIGHT;\n" +
-                "\n" +
-                "varying vec2 $BOTTOM;\n" +
-                "varying vec2 $BOTTOM_LEFT;\n" +
-                "varying vec2 $BOTTOM_RIGHT;\n" +
-                "\n" +
-                "void main()\n" +
-                "{\n" +
-                "   gl_Position = ${GLSLProgram.POSITION};\n" +
-                "\n" +
-                "   vec2 widthStep = vec2($TEXEL_WIDTH, 0.0);\n" +
-                "   vec2 heightStep = vec2(0.0, $TEXEL_HEIGHT);\n" +
-                "   vec2 widthHeightStep = vec2($TEXEL_WIDTH, $TEXEL_HEIGHT);\n" +
-                "   vec2 widthNegativeHeightStep = vec2($TEXEL_WIDTH, -$TEXEL_HEIGHT);\n" +
-                "\n" +
-                "   ${GLSLProgram.TEXTURE_COORDINATE} = ${GLSLProgram.INPUT_TEXTURE_COORDINATE}.xy;\n" +
-                "   $LEFT = ${GLSLProgram.INPUT_TEXTURE_COORDINATE}.xy - widthStep;\n" +
-                "   $RIGHT = ${GLSLProgram.INPUT_TEXTURE_COORDINATE}.xy + widthStep;\n" +
-                "\n" +
-                "   $TOP = ${GLSLProgram.INPUT_TEXTURE_COORDINATE}.xy - heightStep;\n" +
-                "   $TOP_LEFT = ${GLSLProgram.INPUT_TEXTURE_COORDINATE}.xy - widthHeightStep;\n" +
-                "   $TOP_RIGHT = ${GLSLProgram.INPUT_TEXTURE_COORDINATE}.xy + widthNegativeHeightStep;\n" +
-                "\n" +
-                "   $BOTTOM = ${GLSLProgram.INPUT_TEXTURE_COORDINATE}.xy + heightStep;\n" +
-                "   $BOTTOM_LEFT = ${GLSLProgram.INPUT_TEXTURE_COORDINATE}.xy - widthNegativeHeightStep;\n" +
-                "   $BOTTOM_RIGHT = ${GLSLProgram.INPUT_TEXTURE_COORDINATE}.xy + widthHeightStep;\n" +
-                "}"
+        const val V_SHADER = """
+attribute vec4 ${GLSLProgram.POSITION};
+attribute vec4 ${GLSLProgram.INPUT_TEXTURE_COORDINATE};
+
+uniform highp float $TEXEL_WIDTH;
+uniform highp float $TEXEL_HEIGHT;
+
+varying vec2 ${GLSLProgram.TEXTURE_COORDINATE};
+varying vec2 $LEFT;
+varying vec2 $RIGHT;
+
+varying vec2 $TOP;
+varying vec2 $TOP_LEFT;
+varying vec2 $TOP_RIGHT;
+
+varying vec2 $BOTTOM;
+varying vec2 $BOTTOM_LEFT;
+varying vec2 $BOTTOM_RIGHT;
+
+void main() {
+   gl_Position = ${GLSLProgram.POSITION};
+
+   vec2 widthStep = vec2($TEXEL_WIDTH, 0.0);
+   vec2 heightStep = vec2(0.0, $TEXEL_HEIGHT);
+   vec2 widthHeightStep = vec2($TEXEL_WIDTH, $TEXEL_HEIGHT);
+   vec2 widthNegativeHeightStep = vec2($TEXEL_WIDTH, -$TEXEL_HEIGHT);
+
+   ${GLSLProgram.TEXTURE_COORDINATE} = ${GLSLProgram.INPUT_TEXTURE_COORDINATE}.xy;
+   $LEFT = ${GLSLProgram.INPUT_TEXTURE_COORDINATE}.xy - widthStep;
+   $RIGHT = ${GLSLProgram.INPUT_TEXTURE_COORDINATE}.xy + widthStep;
+
+   $TOP = ${GLSLProgram.INPUT_TEXTURE_COORDINATE}.xy - heightStep;
+   $TOP_LEFT = ${GLSLProgram.INPUT_TEXTURE_COORDINATE}.xy - widthHeightStep;
+   $TOP_RIGHT = ${GLSLProgram.INPUT_TEXTURE_COORDINATE}.xy + widthNegativeHeightStep;
+
+   $BOTTOM = ${GLSLProgram.INPUT_TEXTURE_COORDINATE}.xy + heightStep;
+   $BOTTOM_LEFT = ${GLSLProgram.INPUT_TEXTURE_COORDINATE}.xy - widthNegativeHeightStep;
+   $BOTTOM_RIGHT = ${GLSLProgram.INPUT_TEXTURE_COORDINATE}.xy + widthHeightStep;
+}"""
     }
 }
