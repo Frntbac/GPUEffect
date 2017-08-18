@@ -20,20 +20,14 @@ import android.opengl.GLES20
 
 class FBOTexture(override val texture: Texture = Texture2D()) : FrameBuffer, Initializable("FBO") {
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritdoc */
     override var width: Int = 0
         private set
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritdoc */
     override var height: Int = 0
         private set
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritdoc */
     override fun init(width: Int, height: Int): Int {
         destroy()
         if (width < 1 || height < 1) {
@@ -61,9 +55,7 @@ class FBOTexture(override val texture: Texture = Texture2D()) : FrameBuffer, Ini
         return id
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritdoc */
     override fun destroy() {
         if (isInitialized) {
             GLES20.glDeleteFramebuffers(1, intArrayOf(id), 0)

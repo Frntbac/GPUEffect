@@ -39,9 +39,7 @@ open class GLSLProgram
     var uniformTexture: Int = -1
     var attribTextureCoordinate: Int = -1
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritdoc */
     @CallSuper
     override fun init() {
         if (isInitialized) {
@@ -104,9 +102,7 @@ open class GLSLProgram
         return id
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritdoc */
     @CallSuper
     override fun destroy() {
         if (isInitialized) {
@@ -126,7 +122,7 @@ open class GLSLProgram
     }
 
     /**
-     * Called by [.init] to load the program.
+     * Called by [init] to load the program.
      *
      * @return The program ID
      * @throws IllegalStateException when the program couldn't be loaded correctly

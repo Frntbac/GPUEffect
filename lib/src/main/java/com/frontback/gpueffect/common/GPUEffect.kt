@@ -44,43 +44,34 @@ open class GPUEffect<T : GLSLProgram> @JvmOverloads constructor(
     @Rotation
     private var rotation = Rotation.NONE
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritdoc */
+    override var rotationArray = Rotation.ARRAY_NONE
+
+    /** @inheritdoc */
     override var isInitialized = false
         protected set
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritdoc */
     override var renderFrameBuffer: FrameBuffer? = null
 
     override final var outputWidth: Int = 0
-        /**
-         * {@inheritDoc}
-         */
+        /** @inheritdoc */
         get
         private set
     override final var outputHeight: Int = 0
-        /**
-         * {@inheritDoc}
-         */
+        /** @inheritdoc */
         get
         private set
 
-    /**
-     * {@inheritDoc}
-     */
-    override var input: Texture? = null
+    /** @inheritdoc */
+    override var input: Input? = null
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritdoc */
     override final fun init() {
         if (!program.isInitialized) {
             program.init()
         }
-        input?.let {
+        input?.texture?.let {
             if (!it.isInitialized) {
                 it.init(outputWidth, outputHeight)
             }
@@ -94,23 +85,22 @@ open class GPUEffect<T : GLSLProgram> @JvmOverloads constructor(
         onInit()
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritdoc */
     override fun onInit() {
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    override final fun draw() = onDraw(cubeBuffer, textureBuffer)
+    /** @inheritdoc */
+    override final fun draw(): Texture? {
+        textureBuffer.clear()
+        textureBuffer.put(rotationArray)
+        textureBuffer.flip()
+        return onDraw(cubeBuffer, textureBuffer)
+    }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritdoc */
     override fun onDraw(cubeBuffer: FloatBuffer, textureBuffer: FloatBuffer): Texture? {
-        val inputTexture = input
+        val inputTexture = input?.texture
         if (!isInitialized || inputTexture == null) {
             return inputTexture
         }
@@ -161,9 +151,7 @@ open class GPUEffect<T : GLSLProgram> @JvmOverloads constructor(
         return outputTexture
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritdoc */
     override fun onPreDraw() {
 
     }
@@ -184,9 +172,7 @@ open class GPUEffect<T : GLSLProgram> @JvmOverloads constructor(
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritdoc */
     override final fun destroy() {
         onPreDestroy()
         renderFrameBuffer?.destroy()
@@ -196,23 +182,17 @@ open class GPUEffect<T : GLSLProgram> @JvmOverloads constructor(
         onDestroy()
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritdoc */
     override fun onPreDestroy() {
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritdoc */
     override fun onDestroy() {
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritdoc */
     override val outputTexture: Texture?
         get() = renderFrameBuffer?.texture
 
@@ -225,16 +205,8 @@ open class GPUEffect<T : GLSLProgram> @JvmOverloads constructor(
         this.rotation = rotation
     }
 
-    protected fun getRotation() = rotation
-
-    /**
-     * {@inheritDoc}
-     */
-    override fun setRotationArray(array: FloatArray) {
-        textureBuffer.clear()
-        textureBuffer.put(array)
-        textureBuffer.flip()
-    }
+    @Rotation
+    override fun getRotation() = rotation
 
     private fun invertWidthAndHeightIfNeeded(@Rotation rotation: Int) {
         if (this.rotation == Rotation.NONE || this.rotation == Rotation._180 ||
@@ -308,9 +280,7 @@ open class GPUEffect<T : GLSLProgram> @JvmOverloads constructor(
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritdoc */
     override fun setOutputSize(width: Int, height: Int) = also {
         if (Effect.shouldInvertWidthAndHeight(rotation)) {
             outputWidth = height
@@ -319,5 +289,10 @@ open class GPUEffect<T : GLSLProgram> @JvmOverloads constructor(
             outputWidth = width
             outputHeight = height
         }
+    }
+
+    companion object {
+        @JvmField
+        val ON_SCREEN : FrameBuffer? = null
     }
 }

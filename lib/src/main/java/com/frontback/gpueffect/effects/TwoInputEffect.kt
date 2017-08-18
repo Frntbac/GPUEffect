@@ -56,7 +56,7 @@ open class TwoInputEffect<T : TwoInputEffect.Program> @JvmOverloads constructor(
                 it.init(outputWidth, outputHeight)
             }
         }
-        setRotation(Rotation.NONE, false, false)
+        setRotation(if (texture2 is BitmapTexture) Rotation.UPSIDE_DOWN else Rotation.NONE, false, false)
     }
 
     @CallSuper
@@ -93,6 +93,8 @@ open class TwoInputEffect<T : TwoInputEffect.Program> @JvmOverloads constructor(
     infix fun alsoReceives(texture: Texture?) = also {
         secondInput = texture
     }
+
+    infix fun alsoReceives(effect: Effect) = alsoReceives(effect.outputTexture)
 
     open fun setRotation(@Rotation rotation: Int, flipHorizontal: Boolean, flipVertical: Boolean) {
         var array = Effect.getRotation(rotation)

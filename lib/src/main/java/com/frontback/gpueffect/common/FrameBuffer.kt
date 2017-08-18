@@ -19,7 +19,7 @@ package com.frontback.gpueffect.common
 /**
  * Interface to abstract the
  */
-interface FrameBuffer {
+interface FrameBuffer : Input {
 
     /**
      * Initialize the frame buffer
@@ -45,7 +45,7 @@ interface FrameBuffer {
     /**
      * Destroy the FrameBuffer
      */
-    fun destroy()
+    override fun destroy()
 
     /**
      * Get the frame buffer ID
@@ -60,7 +60,7 @@ interface FrameBuffer {
 
      * @return the Texture object in which the frame buffer draws
      */
-    val texture: Texture
+    override val texture: Texture
 
     /**
      * Texture's initialization width

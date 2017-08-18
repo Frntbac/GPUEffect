@@ -19,7 +19,7 @@ package com.frontback.gpueffect.common
 import android.graphics.Bitmap
 import java.nio.FloatBuffer
 
-interface Effect {
+interface Effect : Input {
 
     /**
      * Returns the output width
@@ -36,6 +36,11 @@ interface Effect {
     val outputHeight: Int
 
     /**
+     * Texture coordinates array used for [GLSLProgram.TEXTURE_COORDINATE]
+     */
+    var rotationArray: FloatArray
+
+    /**
      * Returns whether or not this Effect has initialized
      *
      * @return Whether or not this Effect has initialized
@@ -45,7 +50,7 @@ interface Effect {
     /**
      * Texture attached to be used as input
      */
-    var input: Texture?
+    var input: Input?
 
     var renderFrameBuffer: FrameBuffer?
 
@@ -55,6 +60,10 @@ interface Effect {
      * @return the texture in which it will draw itself if any
      */
     val outputTexture: Texture?
+
+    /** @inheritdoc */
+    override val texture: Texture?
+        get() = outputTexture
 
     /**
      * Initialize all objects attached to the effect
@@ -67,7 +76,7 @@ interface Effect {
     fun onInit()
 
     /**
-     * Sets the {@see FrameBuffer} in which to draw
+     * Sets the [FrameBuffer] in which to draw
      */
     infix fun drawsInto(frameBuffer: FrameBuffer?) = also {
         renderFrameBuffer = frameBuffer
@@ -75,7 +84,7 @@ interface Effect {
 
     /**
      * Draw the effect
-     * @return the texture in which it draws if any
+     * @return the texture in which it drew if any
      */
     fun draw() : Texture?
 
@@ -86,14 +95,14 @@ interface Effect {
 
     /**
      * Draw the effect
-     * @return the texture in which it draws if any
+     * @return the texture in which it drew if any
      */
     fun onDraw(cubeBuffer: FloatBuffer, textureBuffer: FloatBuffer) : Texture?
 
     /**
      * Destroy all objects attached to the effect
      */
-    fun destroy()
+    override fun destroy()
 
     /**
      * Called before destroying the attached objects
@@ -109,15 +118,11 @@ interface Effect {
      * @throws IllegalArgumentException
      */
     fun setRotation(@Rotation rotation: Int) = also {
-        setRotationArray(getRotation(rotation))
+        rotationArray = getRotation(rotation)
     }
 
-    /**
-     * Sets the texture coordinates array used for {@see GLSLProgram.TEXTURE_COORDINATE}
-     *
-     * @param array Texture's coordinates array
-     */
-    fun setRotationArray(array: FloatArray)
+    @Rotation
+    fun getRotation() : Int
 
     /**
      * Generate a bitmap for this Effect
@@ -146,37 +151,17 @@ interface Effect {
 
     /**
      * Sets the input of this effect
-     * @param texture used as input
+     * @param input used as input
      * @return this
      */
-    infix fun receives(texture: Texture?) = also {
-        input = texture
+    infix fun receives(input: Input?) = also {
+        this.input = input
     }
 
     /**
      * Sets the input of this effect
      *
-     * @param effect from with to retrieve the {@see Texture} as input
-     * @return this
-     */
-    infix fun receives(effect: Effect) = also {
-        this.input = effect.outputTexture
-    }
-
-    /**
-     * Sets the input of this effect
-     *
-     * @param frameBuffer from with to retrieve the {@see Texture} as input
-     * @return this
-     */
-    infix fun receives(frameBuffer: FrameBuffer) = also {
-        this.input = frameBuffer.texture
-    }
-
-    /**
-     * Sets the input of this effect
-     *
-     * @param bitmap from with to create the {@see BitmapTexture} as input
+     * @param bitmap from with to create the [BitmapTexture] as input
      * @return this
      */
     infix fun receives(bitmap: Bitmap) = also {
@@ -192,17 +177,15 @@ interface Effect {
                 -1f, +1f, // top left
                 +1f, +1f)// top right
 
-        val ON_SCREEN : FrameBuffer? = null
-
         fun getRotation(@Rotation rotation: Int) = when (rotation) {
-            Rotation.NONE -> Rotation.ARRAY_NONE.copyOf()
-            Rotation._90 -> Rotation.ARRAY_90.copyOf()
-            Rotation._180 -> Rotation.ARRAY_180.copyOf()
-            Rotation._270 -> Rotation.ARRAY_270.copyOf()
-            Rotation.UPSIDE_DOWN -> Rotation.ARRAY_UPSIDE_DOWN.copyOf()
-            Rotation.UPSIDE_DOWN_90 -> Rotation.ARRAY_UPSIDE_DOWN_90.copyOf()
-            Rotation.UPSIDE_DOWN_180 -> Rotation.ARRAY_UPSIDE_DOWN_180.copyOf()
-            Rotation.UPSIDE_DOWN_270 -> Rotation.ARRAY_UPSIDE_DOWN_270.copyOf()
+            Rotation.NONE -> Rotation.ARRAY_NONE
+            Rotation._90 -> Rotation.ARRAY_90
+            Rotation._180 -> Rotation.ARRAY_180
+            Rotation._270 -> Rotation.ARRAY_270
+            Rotation.UPSIDE_DOWN -> Rotation.ARRAY_UPSIDE_DOWN
+            Rotation.UPSIDE_DOWN_90 -> Rotation.ARRAY_UPSIDE_DOWN_90
+            Rotation.UPSIDE_DOWN_180 -> Rotation.ARRAY_UPSIDE_DOWN_180
+            Rotation.UPSIDE_DOWN_270 -> Rotation.ARRAY_UPSIDE_DOWN_270
             else -> throw IllegalArgumentException("$rotation is not a valid rotation argument")
         }
 

@@ -25,15 +25,11 @@ open class Texture2D : Texture, Initializable("Texture2D") {
     override var height: Int = -1
         protected set
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritdoc */
     override val type: Int
         get() = GLES20.GL_TEXTURE_2D
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritdoc */
     override fun init(width: Int, height: Int): Int {
         GLES20.glGetError()
         destroy()
@@ -63,9 +59,7 @@ open class Texture2D : Texture, Initializable("Texture2D") {
         return id
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritdoc */
     override fun destroy() {
         if (isInitialized) {
             GLES20.glDeleteTextures(1, intArrayOf(id), 0)

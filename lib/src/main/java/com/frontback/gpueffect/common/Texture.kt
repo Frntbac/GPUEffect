@@ -16,7 +16,7 @@
 
 package com.frontback.gpueffect.common
 
-interface Texture {
+interface Texture : Input {
 
     /**
      * Initialize the texture
@@ -31,7 +31,7 @@ interface Texture {
     /**
      * Destroy the texture
      */
-    fun destroy()
+    override fun destroy()
 
     /**
      * Get if the texture was initialized
@@ -63,4 +63,8 @@ interface Texture {
      * Texture's initialization height
      */
     val height: Int
+
+    /** @inheritdoc */
+    override val texture: Texture
+        get() = this
 }

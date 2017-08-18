@@ -34,15 +34,11 @@ open class BitmapTexture(
     override val width: Int = bitmap.width
     override val height: Int = bitmap.height
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritdoc */
     override val type: Int
         get() = GLES20.GL_TEXTURE_2D
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritdoc */
     override fun init(width: Int, height: Int): Int {
         GLES20.glGetError()
         destroy()
@@ -70,9 +66,7 @@ open class BitmapTexture(
         return id
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritdoc */
     override fun destroy() {
         if (isInitialized) {
             GLES20.glDeleteTextures(1, intArrayOf(id), 0)

@@ -22,61 +22,7 @@ import java.nio.FloatBuffer
 
 open class GPUMultiEffect(vararg _effects: Effect) : Effect {
 
-
-    override final var outputWidth: Int = 0
-        /**
-         * {@inheritDoc}
-         */
-        get
-        private set
-
-    override final var outputHeight: Int = 0
-        /**
-         * {@inheritDoc}
-         */
-        get
-        private set
-
-    override var isInitialized: Boolean = false
-        /**
-         * {@inheritDoc}
-         */
-        get
-        protected set
-
-    /**
-     * {@inheritDoc}
-     */
-    override var input: Texture? = null
-
-    var firstFBO: FrameBuffer? = null
-        private set
-    var secondFBO: FrameBuffer? = null
-        private set
-
-    @Rotation
-    private var rotation = Rotation.NONE
-
-    val cubeBuffer: FloatBuffer by lazy {
-        ByteBuffer.allocateDirect(32)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer().apply { put(Effect.CUBE).flip() }
-    }
-    val textureBuffer: FloatBuffer by lazy {
-        ByteBuffer.allocateDirect(32)
-                .order(ByteOrder.nativeOrder())
-                .asFloatBuffer().apply { put(Effect.getRotation(rotation)).flip() }
-    }
-
     val effects = mutableListOf<Effect>()
-
-    /**
-     * {@inheritDoc}
-     */
-    override var renderFrameBuffer: FrameBuffer? = null
-
-    override val outputTexture: Texture?
-        get() = renderFrameBuffer?.texture
 
     init {
         _effects.forEach {
@@ -84,10 +30,48 @@ open class GPUMultiEffect(vararg _effects: Effect) : Effect {
         }
     }
 
-    fun setExtraBuffers(first: FrameBuffer?, second: FrameBuffer?) {
-        firstFBO = first
-        secondFBO = second
+    override final var outputWidth: Int = 0
+        /** @inheritdoc */
+        get
+        private set
+
+    override final var outputHeight: Int = 0
+        /** @inheritdoc */
+        get
+        private set
+
+    override var isInitialized: Boolean = false
+        /** @inheritdoc */
+        get
+        protected set
+
+    /** @inheritdoc */
+    override var input: Input? = null
+
+    @Rotation
+    private var rotation = Rotation.NONE
+
+    /** @inheritdoc */
+    override var rotationArray: FloatArray = Rotation.ARRAY_NONE
+
+    var provider: FBOProvider? = null
+
+    private val cubeBuffer: FloatBuffer by lazy {
+        ByteBuffer.allocateDirect(32)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer().apply { put(Effect.CUBE).flip() }
     }
+    private val textureBuffer: FloatBuffer by lazy {
+        ByteBuffer.allocateDirect(32)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer().apply { put(Effect.getRotation(rotation)).flip() }
+    }
+
+    /** @inheritdoc */
+    override var renderFrameBuffer: FrameBuffer? = null
+
+    override val outputTexture: Texture?
+        get() = renderFrameBuffer?.texture
 
     override fun init() {
         renderFrameBuffer?.run {
@@ -96,23 +80,14 @@ open class GPUMultiEffect(vararg _effects: Effect) : Effect {
             }
         }
         effects.forEach { it.init() }
-        if (firstFBO == null) {
-            firstFBO = FBOTexture()
-        }
-        if (!firstFBO!!.isInitialized) {
-            firstFBO!!.init(outputWidth, outputHeight)
-        }
-        if (secondFBO == null) {
-            secondFBO = FBOTexture()
-        }
-        if (!secondFBO!!.isInitialized) {
-            secondFBO!!.init(outputWidth, outputHeight)
-        }
 
-        input?.run {
+        input?.texture?.run {
             if (!isInitialized) {
                 init(outputWidth, outputHeight)
             }
+        }
+        if (provider == null) {
+            provider = FBOProvider()
         }
         onInit()
     }
@@ -122,57 +97,43 @@ open class GPUMultiEffect(vararg _effects: Effect) : Effect {
         this.rotation = rotation
     }
 
-    protected fun getRotation() = rotation
+    @Rotation
+    override fun getRotation() = rotation
 
-    override fun setRotationArray(array: FloatArray) {
-        textureBuffer.clear()
-        textureBuffer.put(array)
-        textureBuffer.flip()
-    }
-
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritdoc */
     override fun onInit() {
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritdoc */
     override final fun draw() = onDraw(cubeBuffer, textureBuffer)
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritdoc */
     override fun onPreDraw() {
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritdoc */
     override fun onDraw(cubeBuffer: FloatBuffer, textureBuffer: FloatBuffer): Texture? {
         onPreDraw()
-        var hasGivenInput = false
-        var fbo = firstFBO
-        var input: Texture? = input
+        var hasGivenInput = input == null
+        var input: Texture? = input?.texture
+        var previousFBO: FrameBuffer? = null
         effects.forEachIndexed { i, current ->
+            if (current is GPUMultiEffect) {
+                current.provider = provider
+            }
+            // region FBO
             var fboSet = false
             if (i == effects.size - 1) {
-                renderFrameBuffer?.run { current.drawsInto(this) }
+                renderFrameBuffer?.let { current.drawsInto(it) }
                 fboSet = true
-            } else {
-                if (current.outputTexture == null) {
-                    current.drawsInto(fbo)
-                    fbo = if (fbo === firstFBO) {
-                        secondFBO
-                    } else {
-                        firstFBO
-                    }
-                    fboSet = true
-                }
+            } else if (current.outputTexture == null) {
+                current drawsInto provider?.acquireFor(current)
+                fboSet = true
             }
+            // endregion FBO
+            // region Input
             var inputSet = false
             if (current.input == null) {
                 if (!hasGivenInput) {
@@ -184,42 +145,51 @@ open class GPUMultiEffect(vararg _effects: Effect) : Effect {
                     inputSet = true
                 }
             }
+            // endregion Input
+            // region Draw
+            textureBuffer.clear()
+            textureBuffer.put(if (i == 0) rotationArray else current.rotationArray)
+            textureBuffer.flip()
             current.onDraw(cubeBuffer, textureBuffer)
+            // endregion Draw
+            // region Clean-up
             if (inputSet) {
                 input = current.outputTexture
                 current.input = null
             }
             if (fboSet) {
-                current.drawsInto(null)
+                provider?.release(previousFBO)
+                previousFBO = if (current.renderFrameBuffer !== renderFrameBuffer)
+                    current.renderFrameBuffer
+                else
+                    null
+                current.renderFrameBuffer = null
+            }
+            // endregion
+            if (current is GPUMultiEffect) {
+                current.provider = null
             }
         }
         return outputTexture
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritdoc */
     override final fun destroy() {
         onPreDestroy()
         renderFrameBuffer?.destroy()
-        firstFBO?.destroy()
-        secondFBO?.destroy()
         input?.destroy()
+        provider?.destroy()
         effects.forEach { it.destroy() }
         isInitialized = false
         onDestroy()
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritdoc */
     override fun onPreDestroy() {
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritdoc */
     override fun onDestroy() {
 
     }
@@ -236,26 +206,25 @@ open class GPUMultiEffect(vararg _effects: Effect) : Effect {
         effects.add(effect)
     }
 
+    inline fun add(effect: Effect, func: Effect.() -> Unit) = also {
+        add(effect)
+        effect.func()
+    }
+
     operator fun plusAssign(effect: Effect) {
         add(effect)
     }
 
     operator fun plus(effect: Effect) = GPUMultiEffect(this, effect)
 
-    /**
-     * {@inheritDoc}
-     */
+    /** @inheritdoc */
     override fun setOutputSize(width: Int, height: Int) = also {
         outputWidth = width
         outputHeight = height
         effects.forEach { it.setOutputSize(width, height) }
     }
 
-    companion object {
-        inline fun with(func: GPUMultiEffect.() -> Unit): GPUMultiEffect {
-            val effect = GPUMultiEffect()
-            effect.func()
-            return effect
-        }
+    inline operator fun invoke(func: GPUMultiEffect.() -> Unit) {
+        this.func()
     }
 }
