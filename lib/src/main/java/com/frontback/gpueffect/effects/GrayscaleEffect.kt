@@ -19,6 +19,13 @@ package com.frontback.gpueffect.effects
 import com.frontback.gpueffect.common.GLSLProgram
 import com.frontback.gpueffect.common.GPUEffect
 
+/**
+ * Copyright (C) 2017 Social Apps BVBA
+ * Copyright (C) 2012 CyberAgent
+ *
+ * Adapted from https://github.com/CyberAgent/android-gpuimage/blob/master/library/src/jp/co/cyberagent/android/gpuimage/GPUImageGrayscaleFilter.java
+ */
+
 open class GrayscaleEffect
     : GPUEffect<GLSLProgram>(GLSLProgram(fragmentShader = F_SHADER)) {
 

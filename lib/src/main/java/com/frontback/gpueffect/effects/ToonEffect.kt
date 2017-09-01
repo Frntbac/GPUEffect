@@ -20,6 +20,13 @@ import android.support.annotation.CallSuper
 import com.frontback.gpueffect.common.GLSLProgram
 
 /**
+ * Copyright (C) 2017 Social Apps BVBA
+ * Copyright (C) 2012 CyberAgent
+ *
+ * Adapted from https://github.com/CyberAgent/android-gpuimage/blob/master/library/src/jp/co/cyberagent/android/gpuimage/GPUImageToonFilter.java
+ */
+
+/**
  * This uses Sobel edge detection to place a black border around objects,
  * and then it quantizes the colors present in the image to give a cartoon-like quality to the image.
  */

@@ -4,6 +4,13 @@ import com.frontback.gpueffect.common.GLSLProgram
 import com.frontback.gpueffect.common.GPUEffect
 import com.frontback.gpueffect.common.GPUMultiEffect
 
+/**
+ * Copyright (C) 2017 Social Apps BVBA
+ * Copyright (C) 2012 CyberAgent
+ *
+ * Adapted from https://github.com/CyberAgent/android-gpuimage/blob/master/library/src/jp/co/cyberagent/android/gpuimage/GPUImageTwoPassFilter.java
+ */
+
 open class TwoPassEffect<F : GLSLProgram, S : GLSLProgram> (
         firstProgram : F,
         secondProgram : S

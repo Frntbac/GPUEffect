@@ -16,6 +16,13 @@
 
 package com.frontback.gpueffect.internal
 
+/**
+ * Copyright (C) 2017 Social Apps BVBA
+ * Copyright (C) 2012 CyberAgent
+ *
+ * Adapted from https://github.com/CyberAgent/android-gpuimage/blob/master/library/src/jp/co/cyberagent/android/gpuimage/util/TextureRotationUtil.java
+ */
+
 internal fun FloatArray.flipHorizontally() =
     floatArrayOf(
             this[0].flip(), this[1],

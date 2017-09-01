@@ -16,6 +16,13 @@
 
 package com.frontback.gpueffect.effects
 
+/**
+ * Copyright (C) 2017 Social Apps BVBA
+ * Copyright (C) 2012 CyberAgent
+ *
+ * Adapted from https://github.com/CyberAgent/android-gpuimage/blob/master/library/src/jp/co/cyberagent/android/gpuimage/GPUImageSepiaFilter.java
+ */
+
 open class SepiaEffect @JvmOverloads constructor(
         intensity: Float = 1f
 ) : ColorMatrixEffect(intensity, floatArrayOf(0.3588f, 0.7044f, 0.1368f, 0.0f, 0.2990f, 0.5870f, 0.1140f, 0.0f, 0.2392f, 0.4696f, 0.0912f, 0.0f, 0f, 0f, 0f, 1.0f))

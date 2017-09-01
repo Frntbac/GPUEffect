@@ -20,6 +20,13 @@ import android.support.annotation.CallSuper
 import com.frontback.gpueffect.common.GLSLProgram
 import com.frontback.gpueffect.common.GPUEffect
 
+/**
+ * Copyright (C) 2017 Social Apps BVBA
+ * Copyright (c) 2012, Brad Larson, Ben Cochran, Hugues Lismonde, Keitaroh Kobayashi, Alaric Cole, Matthew Clark, Jacob Gundersen, Chris Williams.
+ *
+ * Adapted from https://github.com/BradLarson/GPUImage/blob/master/framework/Source/GPUImageMotionBlurFilter.m
+ */
+
 open class MotionBlurEffect @JvmOverloads constructor(
         private var _angle: Float = 0f,
         private var _size: Float = 2.5f

@@ -22,6 +22,13 @@ import com.frontback.gpueffect.common.GLSLProgram
 import com.frontback.gpueffect.common.GPUEffect
 
 /**
+ * Copyright (C) 2017 Social Apps BVBA
+ * Copyright (C) 2012 CyberAgent
+ *
+ * Adapted from https://github.com/CyberAgent/android-gpuimage/blob/master/library/src/jp/co/cyberagent/android/gpuimage/GPUImageHazeFilter.java
+ */
+
+/**
  * The haze filter can be used to add or remove haze.
  *
  * This is similar to a UV filter.
@@ -51,7 +58,7 @@ open class HazeEffect @JvmOverloads constructor(
         /**
          * Strength of the color applied. Default 0. Values between -.3 and .3 are best.
 
-         * @param distance -0.3 to 0.3 are best, default 0
+         * @param value -0.3 to 0.3 are best, default 0
          */
         set(@FloatRange(from = -0.3, to = 0.3) value) {
             _distance = value
@@ -63,7 +70,7 @@ open class HazeEffect @JvmOverloads constructor(
         /**
          * Amount of color change. Default 0. Values between -.3 and .3 are best.
 
-         * @param slope -0.3 to 0.3 are best, default 0
+         * @param value -0.3 to 0.3 are best, default 0
          */
         set(@FloatRange(from = -0.3, to = 0.3) value) {
             _slope = value

@@ -22,6 +22,13 @@ import com.frontback.gpueffect.common.GLSLProgram
 import com.frontback.gpueffect.common.GPUEffect
 
 /**
+ * Copyright (C) 2017 Social Apps BVBA
+ * Copyright (C) 2012 CyberAgent
+ *
+ * Adapted from https://github.com/CyberAgent/android-gpuimage/blob/master/library/src/jp/co/cyberagent/android/gpuimage/GPUImageGammaFilter.java
+ */
+
+/**
  * gamma value ranges from 0.0 to 3.0, with 1.0 as the normal level
  */
 open class GammaEffect @JvmOverloads constructor(

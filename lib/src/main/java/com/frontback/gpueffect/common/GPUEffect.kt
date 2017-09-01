@@ -23,6 +23,13 @@ import java.nio.ByteOrder
 import java.nio.FloatBuffer
 import java.util.*
 
+/**
+ * Copyright (C) 2017 Social Apps BVBA
+ * Copyright (C) 2012 CyberAgent
+ *
+ * Adapted from https://github.com/CyberAgent/android-gpuimage/blob/master/library/src/jp/co/cyberagent/android/gpuimage/GPUImageFilter.java
+ */
+
 @Suppress("unused")
 open class GPUEffect<T : GLSLProgram> @JvmOverloads constructor(
         @Suppress("UNCHECKED_CAST") val program: T = GLSLProgram() as T

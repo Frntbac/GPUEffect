@@ -22,6 +22,14 @@ import android.support.annotation.CallSuper
 import android.util.Log
 import com.frontback.gpueffect.internal.S
 
+/**
+ * Copyright (C) 2017 Social Apps BVBA
+ * Copyright (C) 2012 CyberAgent
+ *
+ * Part of code based on https://github.com/CyberAgent/android-gpuimage/blob/master/library/src/jp/co/cyberagent/android/gpuimage/OpenGlUtils.java
+ * and https://github.com/CyberAgent/android-gpuimage/blob/master/library/src/jp/co/cyberagent/android/gpuimage/GPUImageFilter.java
+ */
+
 @Suppress("unused")
 open class GLSLProgram
 /**
@@ -178,25 +186,25 @@ open class GLSLProgram
         const val TEXTURE_COORDINATE = "textureCoordinate"
         const val POSITION = "position"
 
-        const val NO_VERTEX_SHADER = "" +
-                "attribute vec4 $POSITION;\n" +
-                "attribute vec4 $INPUT_TEXTURE_COORDINATE;\n" +
-                "" +
-                "varying vec2 $TEXTURE_COORDINATE;\n" +
-                "" +
-                "void main() {\n" +
-                "    gl_Position = $POSITION;\n" +
-                "    textureCoordinate = $INPUT_TEXTURE_COORDINATE.xy;\n" +
-                "}"
+        const val NO_VERTEX_SHADER = """
+attribute vec4 $POSITION;
+attribute vec4 $INPUT_TEXTURE_COORDINATE;
 
-        const val NO_FRAGMENT_SHADER = "" +
-                "varying highp vec2 $TEXTURE_COORDINATE;\n" +
-                "" +
-                "uniform sampler2D $INPUT_TEXTURE;\n" +
-                "" +
-                "void main() { \n" +
-                "     gl_FragColor = texture2D($INPUT_TEXTURE, $TEXTURE_COORDINATE);\n" +
-                "}"
+varying vec2 $TEXTURE_COORDINATE;
+
+void main() {
+    gl_Position = $POSITION;
+    $TEXTURE_COORDINATE = $INPUT_TEXTURE_COORDINATE.xy;
+}"""
+
+        const val NO_FRAGMENT_SHADER = """
+varying highp vec2 $TEXTURE_COORDINATE;
+
+uniform sampler2D $INPUT_TEXTURE;
+
+void main() {
+     gl_FragColor = texture2D($INPUT_TEXTURE, $TEXTURE_COORDINATE);
+}"""
 
         /**
          * Retrieve the shader's string from file in assets

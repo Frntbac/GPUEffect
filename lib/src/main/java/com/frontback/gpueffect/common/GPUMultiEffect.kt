@@ -20,6 +20,13 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
 
+/**
+ * Copyright (C) 2017 Social Apps BVBA
+ * Copyright (C) 2012 CyberAgent
+ *
+ * Adapted from https://github.com/CyberAgent/android-gpuimage/blob/master/library/src/jp/co/cyberagent/android/gpuimage/GPUImageFilterGroup.java
+ */
+
 open class GPUMultiEffect(vararg _effects: Effect) : Effect {
 
     val effects = mutableListOf<Effect>()

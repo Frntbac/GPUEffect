@@ -21,6 +21,13 @@ import android.support.annotation.FloatRange
 import com.frontback.gpueffect.common.GLSLProgram
 import com.frontback.gpueffect.common.Texture
 
+/**
+ * Copyright (C) 2017 Social Apps BVBA
+ * Copyright (C) 2012 CyberAgent
+ *
+ * Adapted from https://github.com/CyberAgent/android-gpuimage/blob/master/library/src/jp/co/cyberagent/android/gpuimage/GPUImageMixBlendFilter.java
+ */
+
 open class MixBlendEffect<T : MixBlendEffect.Program>(
         texture2: Texture? = null,
         @FloatRange(from = 0.0, to = 1.0) private var _mix: Float = 0.5f,

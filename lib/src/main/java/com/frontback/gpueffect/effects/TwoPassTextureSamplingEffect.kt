@@ -4,6 +4,13 @@ import android.support.annotation.CallSuper
 import com.frontback.gpueffect.common.Effect
 import com.frontback.gpueffect.common.GLSLProgram
 
+/**
+ * Copyright (C) 2017 Social Apps BVBA
+ * Copyright (C) 2012 CyberAgent
+ *
+ * Adapted from https://github.com/CyberAgent/android-gpuimage/blob/master/library/src/jp/co/cyberagent/android/gpuimage/GPUImageTwoPassTextureSamplingFilter.java
+ */
+
 open class TwoPassTextureSamplingEffect<F : TwoPassTextureSamplingEffect.Program, S : TwoPassTextureSamplingEffect.Program>
 @JvmOverloads constructor (
         firstProgram: F,

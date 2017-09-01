@@ -20,6 +20,13 @@ import android.support.annotation.CallSuper
 import android.support.annotation.FloatRange
 
 /**
+ * Copyright (C) 2017 Social Apps BVBA
+ * Copyright (C) 2012 CyberAgent
+ *
+ * Adapted from https://github.com/CyberAgent/android-gpuimage/blob/master/library/src/jp/co/cyberagent/android/gpuimage/GPUImageEmbossFilter.java
+ */
+
+/**
  * Applies an emboss effect to the image.
  *
  * Intensity ranges from 0.0 to 4.0, with 1.0 as the normal level

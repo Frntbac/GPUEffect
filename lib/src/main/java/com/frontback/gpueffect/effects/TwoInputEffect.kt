@@ -24,6 +24,12 @@ import com.frontback.gpueffect.internal.flipVertically
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
+/**
+ * Copyright (C) 2017 Social Apps BVBA
+ * Copyright (C) 2012 CyberAgent
+ *
+ * Adapted from https://github.com/CyberAgent/android-gpuimage/blob/master/library/src/jp/co/cyberagent/android/gpuimage/GPUImageTwoInputFilter.java
+ */
 
 open class TwoInputEffect<T : TwoInputEffect.Program> @JvmOverloads constructor(
         private var texture2: Texture? = null,

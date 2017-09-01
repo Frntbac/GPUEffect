@@ -21,6 +21,13 @@ import android.support.annotation.IntDef;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+/**
+ * Copyright (C) 2017 Social Apps BVBA
+ * Copyright (C) 2012 CyberAgent
+ *
+ * Adapted from https://github.com/CyberAgent/android-gpuimage/blob/master/library/src/jp/co/cyberagent/android/gpuimage/Rotation.java
+ */
+
 @IntDef({Rotation.NONE, Rotation._90, Rotation._180, Rotation._270,
         Rotation.UPSIDE_DOWN, Rotation.UPSIDE_DOWN_90, Rotation.UPSIDE_DOWN_180, Rotation.UPSIDE_DOWN_270})
 @Retention(RetentionPolicy.SOURCE)
