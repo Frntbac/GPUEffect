@@ -73,7 +73,7 @@ new GPUMultiEffect(new HazeEffect(), new EmbossEffect())
     .getBitmap()
 ```
 
-# Gradle dependency
+# Gradle dependency (To come)
 
 ```groovy
 repositories {
@@ -81,7 +81,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.frontback:gpueffect:1.0.0'
+    compile 'me.frontback:gpueffect:1.0.0'
 }
 ```
 
