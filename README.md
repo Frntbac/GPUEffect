@@ -73,7 +73,7 @@ new GPUMultiEffect(new HazeEffect(), new EmbossEffect())
     .getBitmap()
 ```
 
-# Gradle dependency (To come)
+# Gradle dependency
 
 ```groovy
 repositories {
