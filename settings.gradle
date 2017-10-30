@@ -1,1 +1,5 @@
-include ':lib', ':sample', ':fresco-processors'
+include ':gpueffect'
+project(':gpueffect').projectDir = new File('./lib')
+include ':gpueffect-fresco-processors'
+project(':gpueffect-fresco-processors').projectDir = new File('./fresco-processors')
+include ':sample'

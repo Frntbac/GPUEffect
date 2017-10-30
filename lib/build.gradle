@@ -12,7 +12,7 @@ ext {
     libraryDescription = 'OpenGL filters for Android'
     siteUrl = 'https://github.com/Frntbac/GPUEffect'
     gitUrl = 'https://github.com/Frntbac/GPUEffect.git'
-    libraryVersion = '1.0'
+    libraryVersion = '1.0.0'
     developerId = 'Frntbac'
     developerName = 'Frontback'
     developerEmail = 'bm@frontback.me'
